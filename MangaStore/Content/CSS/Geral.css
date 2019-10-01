@@ -1,0 +1,40 @@
+﻿.fontPatrick {
+    font-family: 'Patrick Hand', cursive;
+}
+
+.titlePages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 7em;
+    width: 100%
+}
+
+.bgCadastrarManga {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(77, 31, 3, 0.4);
+    float: left;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    height: 500px;
+    width: 100%;
+    text-align: center;
+    display:flex;
+}
+
+    .bgCadastrarManga::before {
+        background-image: url(../../Imagem/Image2.jpg);
+        background-position: center;
+        background-size: cover;
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        opacity: 1.4;
+    }
