@@ -57,6 +57,7 @@
                         </div>
                         <div class="col-lg-5">
                             <select id="cboEditora" class="form-control">
+                                <option value="-1"></option>
                                 <option value="500">TESTE</option>
                             </select>
                         </div>
@@ -67,6 +68,7 @@
                         </div>
                         <div class="col-lg-5">
                             <select id="cboGenero" class="form-control">
+                                <option value="-1"></option>
                                 <option value="1">TESTE</option>
                             </select>
                         </div>
@@ -79,6 +81,7 @@
                         </div>
                         <div class="col-lg-5">
                             <select id="cboIdioma" class="form-control">
+                                <option value="-1"></option>
                                 <option value="1">TESTE</option>
                             </select>
                         </div>
@@ -144,12 +147,15 @@
     <script type="text/javascript" src="Scripts/jquery-migrate.js"></script>
     <script type="text/javascript" src="Scripts/jquery-ui-1.12.1.min.js"></script>
     <script type="text/javascript" src="Scripts/jQueryMask/dist/jquery.mask.min.js"></script>
-
+    
     <script>
         $(document).ready(function ($) {
             $('#txtPreco').mask('000.000.000.000.000,00', { reverse: true });
             $('#txtISBN').mask('000-00-000-0000-0');
             $('#txtDtPublicacao').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
                 dateFormat: 'dd/mm/yy',
                 dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'],
                 dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
@@ -205,6 +211,7 @@
     <script>
         //Manda as informações para o serviço e cadastra o livro
         function cadastrarLivro() {
+            //Recupera os valores
             var txtISBN = $('#txtISBN').val();
             var txtTitulo = $('#txtTitulo').val();
             var txtAutor = $('#txtAutor').val();
@@ -213,28 +220,58 @@
             var cboIdioma = $("#cboIdioma option:selected").val();
             var txtPreco = $('#txtPreco').val();
             var txtQtdPaginas = $('#txtQtdPagina').val();
-            var txtDtPublicacao = $('#txtDtPublicacao').val()+" 00:00:00";
+            var txtDtPublicacao = $('#txtDtPublicacao').val();
             var imgCapa = $("#imgCapa").attr("src");
             var txtQuantidade = $('#txtQuantidade').val();
             var txtDescricao = $('#txtDescrição').val();
-            alert(txtDtPublicacao);
 
+            //Verifica se o source do componente image é o padrão
+            if (imgCapa == "Imagem/Icon/iconAdd.jpg")
+            {
+                /*Define a variavel como null. 
+                Faço isso para quando for mandado no servidor eu poder validar. No caso como esta a imagem padrão
+                significa que o usuario não escolheu uma imagem
+                */
+                imgCapa = null;
+            }
+            else
+            {
+                /*Caso o usuario tenha escolhido uma imagem, eu removo do base64 da imagem o data:image;base64... para poder mandar
+                para o servidor e converter para bytes
+                */
+                imgCapa = imgCapa.replace(/^data:image\/[a-z]+;base64,/, "");
+            }
+
+            //Verifica se o usuário não colocou uma data
+            if (txtDtPublicacao.toString().trim() == "")
+            {
+                /*
+                 * Se ele não colocou uma data eu defino o valor da variavel com o valor minimo do datetime
+                 */
+                txtDtPublicacao = '<%= DateTime.MinValue.Date%>';
+            }
+            else
+            {
+                //Caso tenha colocado uma data, eu acrescento um horário padrão
+                txtDtPublicacao += " 00:00:00";
+            }
+
+            //Cria um objeto para poder mandar para o servidor
             var jData =
             {
                 Isbn: txtISBN,
                 Titulo: txtTitulo,
                 Autor: txtAutor,
-                CdEditora: cboEditora,
-                CdGenero: cboGenero,
-                CdIdioma: cboIdioma,
+                FkEditora: cboEditora,
+                FkGenero: cboGenero,
+                FkIdioma: cboIdioma,
                 Preco: txtPreco,
                 QtdPaginas: txtQtdPaginas,
-                GetData: txtDtPublicacao,
+                DataPublicacao: txtDtPublicacao,
                 BaseImage: imgCapa,
                 QuantidadeLivros: txtQuantidade,
                 Descricao: txtDescricao
             }
-
 
             $.ajax({
                 type: "POST",
@@ -244,13 +281,38 @@
                 data: JSON.stringify(jData),
                 success: function (data)
                 {
-                    alert(data.d);
-                },
-                error: function (err)
-                {
-                    alert(err.d);
+                    //Separo as mensagens retornadas do servidor
+                    var message = data.split(':');
+
+                    //Demonstro a mensagem retornada
+                    modalMessage("Atenção!", message[0]);
+
+                    //Verifico se houve exito na inserção do livro
+                    if (message[1] == '<%= MangaStore.Util.Messages.Ok%>')
+                    {
+                        //Limpo os campos caso tenha ocorrido com sucesso
+                        LimparCampos();
+                    }
                 }
             })
+        }
+
+        //Limpa os campos
+        function LimparCampos()
+        {
+            $('#txtISBN').val('');
+            $('#txtTitulo').val('');
+            $('#txtAutor').val('');
+            $("#cboEditora#elem").prop('selectedIndex', 0);
+            $("#cboGenero#elem").prop('selectedIndex', 0);
+            $("#cboIdioma#elem").prop('selectedIndex', 0);
+            $('#txtPreco').val('');
+            $('#txtQtdPagina').val('');
+            $('#txtDtPublicacao').val('');
+            $("#imgCapa").attr("src");
+            $('#txtQuantidade').val('');
+            $('#txtDescrição').val('');
+            removerImagem();
         }
     </script>
 </asp:Content>

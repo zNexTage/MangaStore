@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
+using Newtonsoft.Json;
+
 namespace MangaStore.Util
 {
     public class Apoio
@@ -19,6 +22,43 @@ namespace MangaStore.Util
 
             //Retorna o valor
             return Value;
+        }
+
+        /// <summary>
+        /// Converte uma string em JSON
+        /// </summary>
+        /// <param name="Value"></param>
+        /// <returns></returns>
+        public static string ConvertStringToJson(string Value, Messages messages)
+        {
+            string sJson = "";
+
+            sJson = string.Format("{0}:{1}", Value, messages);
+
+            //Retorna o valor convertido
+            return JsonConvert.SerializeObject(sJson);
+        }
+
+        /// <summary>
+        /// Retorna uma mensagem alertando o campo que não foi preenchido corretamente
+        /// </summary>
+        /// <param name="NomeCampo"></param>
+        /// <returns></returns>
+        public static string RetornaMensagemCampoObrigatorio(string NomeCampo)
+        {
+            //Retorna a mensagem
+            return string.Format("O campo {0} é obrigatório, por favor preencha corretamente.", NomeCampo);
+        }
+
+        /// <summary>
+        /// Retorna uma mensagem alertando ao usuario o combo que ele não escolheu uma opção
+        /// </summary>
+        /// <param name="NomeCombo">Nome do combo</param>
+        /// <returns></returns>
+        public static string ComboBoxInvalido(string NomeCombo)
+        {
+            //Retorna a mensagem
+            return string.Format("Por favor! Selecione um/uma {0} corretamente!", NomeCombo);
         }
     }
 }
