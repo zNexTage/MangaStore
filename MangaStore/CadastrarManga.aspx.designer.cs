@@ -11,5 +11,23 @@ namespace MangaStore {
     
     
     public partial class CadastrarManga {
+        
+        /// <summary>
+        /// Controle cboMes.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Modificar a declaração do campo de movimento do arquivo de designer para o arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cboMes;
+        
+        /// <summary>
+        /// Controle cboAno.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Modificar a declaração do campo de movimento do arquivo de designer para o arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cboAno;
     }
 }

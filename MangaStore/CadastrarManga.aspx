@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="CadastrarManga.aspx.cs" Inherits="MangaStore.CadastrarManga" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+ 
     <div class="row">
         <div class="col-12">
             <section class="bgCadastrarManga">
@@ -105,8 +106,11 @@
                         <div class="col-lg-2 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">Data Publicação: </label>
                         </div>
-                        <div class="col-lg-4">
-                            <input type="text" id="txtDtPublicacao" class="form-control" />
+                        <div class="col-lg-2">
+                           <asp:DropDownList runat="server" ID="cboMes" CssClass="form-control"></asp:DropDownList>
+                        </div>
+                         <div class="col-lg-2">
+                           <asp:DropDownList runat="server" ID="cboAno" CssClass="form-control"></asp:DropDownList>
                         </div>
                     </div>
                     <div class="row">
@@ -141,27 +145,54 @@
                     </div>
                 </div>
             </div>
+            <br />
         </div>
     </div>
     <script type="text/javascript" src="Scripts/jquery-3.0.0.min.js"></script>
     <script type="text/javascript" src="Scripts/jquery-migrate.js"></script>
     <script type="text/javascript" src="Scripts/jquery-ui-1.12.1.min.js"></script>
     <script type="text/javascript" src="Scripts/jQueryMask/dist/jquery.mask.min.js"></script>
-    
+
     <script>
+        function maskField(id)
+        {
+            var component = document.getElementById(id);
+            //alert(component.value.length);
+            if (component.length == 7)
+            {
+                alert('oi');
+            }
+        }
+
         $(document).ready(function ($) {
             $('#txtPreco').mask('000.000.000.000.000,00', { reverse: true });
             $('#txtISBN').mask('000-00-000-0000-0');
+            
             $('#txtDtPublicacao').datepicker({
                 changeMonth: true,
                 changeYear: true,
                 showButtonPanel: true,
-                dateFormat: 'dd/mm/yy',
+                dateFormat: 'MM yy',
+                yearRange: "-100:+0",
                 dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'],
                 dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
                 dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
                 monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                onClose: function (dateText, inst) {
+                    var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                    month = parseInt(month) + parseInt(1);
+                    if (month <= 9) {
+                        month = "0" + month;
+                    }
+                    $(this).val(month+ "/" + year);
+                }
+                //changeMonth: true,
+                //changeYear: true,
+                //showButtonPanel: true,
+                //dateFormat: 'dd/mm/yy',
+
             });
         })
         //Adiciona a imagem upada no componente Image.
@@ -220,22 +251,20 @@
             var cboIdioma = $("#cboIdioma option:selected").val();
             var txtPreco = $('#txtPreco').val();
             var txtQtdPaginas = $('#txtQtdPagina').val();
-            var txtDtPublicacao = $('#txtDtPublicacao').val();
+            var txtDtPublicacao = $("#<%=cboMes.ClientID%> option:selected").val() + "/" + $("#<%= cboAno.ClientID%> option:selected").val();
             var imgCapa = $("#imgCapa").attr("src");
             var txtQuantidade = $('#txtQuantidade').val();
             var txtDescricao = $('#txtDescrição').val();
 
             //Verifica se o source do componente image é o padrão
-            if (imgCapa == "Imagem/Icon/iconAdd.jpg")
-            {
+            if (imgCapa == "Imagem/Icon/iconAdd.jpg") {
                 /*Define a variavel como null. 
                 Faço isso para quando for mandado no servidor eu poder validar. No caso como esta a imagem padrão
                 significa que o usuario não escolheu uma imagem
                 */
                 imgCapa = null;
             }
-            else
-            {
+            else {
                 /*Caso o usuario tenha escolhido uma imagem, eu removo do base64 da imagem o data:image;base64... para poder mandar
                 para o servidor e converter para bytes
                 */
@@ -243,16 +272,16 @@
             }
 
             //Verifica se o usuário não colocou uma data
-            if (txtDtPublicacao.toString().trim() == "")
-            {
+            if (txtDtPublicacao.toString().trim() == "") {
                 /*
                  * Se ele não colocou uma data eu defino o valor da variavel com o valor minimo do datetime
                  */
                 txtDtPublicacao = '<%= DateTime.MinValue.Date%>';
             }
-            else
-            {
-                //Caso tenha colocado uma data, eu acrescento um horário padrão
+            else {
+                //Como o campo de data é somente mes e ano, eu realiza a concatenação de um dia padrão, para evitar erros quando os dados forem enviados para o servidor
+                var aux = "01/" + txtDtPublicacao;
+                txtDtPublicacao = aux;
                 txtDtPublicacao += " 00:00:00";
             }
 
@@ -279,8 +308,7 @@
                 contentType: "application/json",
                 dataType: "json",
                 data: JSON.stringify(jData),
-                success: function (data)
-                {
+                success: function (data) {
                     //Separo as mensagens retornadas do servidor
                     var message = data.split(':');
 
@@ -288,8 +316,7 @@
                     modalMessage("Atenção!", message[0]);
 
                     //Verifico se houve exito na inserção do livro
-                    if (message[1] == '<%= MangaStore.Util.Messages.Ok%>')
-                    {
+                    if (message[1] == '<%= MangaStore.Util.Messages.Ok%>') {
                         //Limpo os campos caso tenha ocorrido com sucesso
                         LimparCampos();
                     }
@@ -298,8 +325,7 @@
         }
 
         //Limpa os campos
-        function LimparCampos()
-        {
+        function LimparCampos() {
             $('#txtISBN').val('');
             $('#txtTitulo').val('');
             $('#txtAutor').val('');
@@ -308,7 +334,8 @@
             $("#cboIdioma#elem").prop('selectedIndex', 0);
             $('#txtPreco').val('');
             $('#txtQtdPagina').val('');
-            $('#txtDtPublicacao').val('');
+            $('#<%=cboMes.ClientID%>').prop('selectedIndex', 0);
+            $('#<%=cboAno.ClientID%>').prop('selectedIndex', 0);
             $("#imgCapa").attr("src");
             $('#txtQuantidade').val('');
             $('#txtDescrição').val('');
