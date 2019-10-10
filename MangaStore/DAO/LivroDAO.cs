@@ -73,7 +73,7 @@ namespace MangaStore.DAO
             dbHelper.CloseConnection();
         }
         
-        public List<object> Select(int cod, DataBaseHelper.SelectType selectType)
+        public List<object> Select(int cod, DataBaseHelper.SelectType selectType, DataBaseHelper.OrderBy orderBy)
         {
             throw new NotImplementedException();
         }

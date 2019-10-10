@@ -21,7 +21,7 @@ namespace MangaStore.DAO
             throw new NotImplementedException();
         }
 
-        public List<object> Select(int cod, DataBaseHelper.SelectType selectType)
+        public List<object> Select(int cod, DataBaseHelper.SelectType selectType, DataBaseHelper.OrderBy orderBy)
         {
             StringBuilder sbCommand = null;
             DataBaseHelper dbHelper = null;
@@ -53,6 +53,13 @@ namespace MangaStore.DAO
 
                 //Realiza a montagem do parametro
                 dbHelper.BuildParameters(ref sqlCommand, pId);
+            }
+
+            //Verifica se irá ser adicionado uma ordenação
+            if (orderBy != DataBaseHelper.OrderBy.None) 
+            {
+                //Realiza a montagem da ordenação
+                dbHelper.MakeOrderBy(ref sbCommand, orderBy, "IDIOMA");
             }
 
             //Atribui o comando ao Sql Command

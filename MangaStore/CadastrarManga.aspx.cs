@@ -135,5 +135,15 @@ namespace MangaStore
                 cboIdioma.Items.Add(new ListItem("Outro", "-2"));
             }
         }
+
+        private void PreencheComboEditoras() 
+        {
+            //TODO: Realiza o preenchimento do combo Editoras
+        }
+
+        private void PreencheComboGenero() 
+        {
+            //TODO: Realiza o preenchimento do combo genero
+        }
     }
 }
