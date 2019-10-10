@@ -7,11 +7,22 @@
 // </gerado automaticamente>
 //------------------------------------------------------------------------------
 
-namespace MangaStore {
-    
-    
-    public partial class CadastrarManga {
-        
+namespace MangaStore
+{
+
+
+    public partial class CadastrarManga
+    {
+
+        /// <summary>
+        /// Controle cboIdioma.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Modificar a declaração do campo de movimento do arquivo de designer para o arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cboIdioma;
+
         /// <summary>
         /// Controle cboMes.
         /// </summary>
@@ -20,7 +31,7 @@ namespace MangaStore {
         /// Modificar a declaração do campo de movimento do arquivo de designer para o arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList cboMes;
-        
+
         /// <summary>
         /// Controle cboAno.
         /// </summary>

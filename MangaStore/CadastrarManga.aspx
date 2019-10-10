@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.Master" AutoEventWireup="true" CodeBehind="CadastrarManga.aspx.cs" Inherits="MangaStore.CadastrarManga" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
- 
+
     <div class="row">
         <div class="col-12">
             <section class="bgCadastrarManga">
@@ -81,10 +81,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <select id="cboIdioma" class="form-control">
-                                <option value="-1"></option>
-                                <option value="1">TESTE</option>
-                            </select>
+                            <asp:DropDownList runat="server" ID="cboIdioma" CssClass="form-control"></asp:DropDownList>                            
                         </div>
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
@@ -107,10 +104,10 @@
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">Data Publicação: </label>
                         </div>
                         <div class="col-lg-2">
-                           <asp:DropDownList runat="server" ID="cboMes" CssClass="form-control"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="cboMes" CssClass="form-control"></asp:DropDownList>
                         </div>
-                         <div class="col-lg-2">
-                           <asp:DropDownList runat="server" ID="cboAno" CssClass="form-control"></asp:DropDownList>
+                        <div class="col-lg-2">
+                            <asp:DropDownList runat="server" ID="cboAno" CssClass="form-control"></asp:DropDownList>
                         </div>
                     </div>
                     <div class="row">
@@ -248,7 +245,7 @@
             var txtAutor = $('#txtAutor').val();
             var cboEditora = $("#cboEditora option:selected").val();
             var cboGenero = $("#cboGenero option:selected").val();
-            var cboIdioma = $("#cboIdioma option:selected").val();
+            var cboIdioma = $("#<%= cboIdioma.ClientID%> option:selected").val();
             var txtPreco = $('#txtPreco').val();
             var txtQtdPaginas = $('#txtQtdPagina').val();
             var txtDtPublicacao = $("#<%=cboMes.ClientID%> option:selected").val() + "/" + $("#<%= cboAno.ClientID%> option:selected").val();
@@ -331,7 +328,7 @@
             $('#txtAutor').val('');
             $("#cboEditora#elem").prop('selectedIndex', 0);
             $("#cboGenero#elem").prop('selectedIndex', 0);
-            $("#cboIdioma#elem").prop('selectedIndex', 0);
+            $("#<%=cboIdioma.ClientID%>#elem").prop('selectedIndex', 0);
             $('#txtPreco').val('');
             $('#txtQtdPagina').val('');
             $('#<%=cboMes.ClientID%>').prop('selectedIndex', 0);

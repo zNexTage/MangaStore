@@ -212,6 +212,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\IdiomaBLL.cs" />
     <Compile Include="BLL\IValidationHelper.cs" />
     <Compile Include="BLL\LivroBLL.cs" />
     <Compile Include="CadastrarManga.aspx.cs">
@@ -226,6 +227,7 @@
     </Compile>
     <Compile Include="DAO\DataBaseHelper.cs" />
     <Compile Include="DAO\IDataAccessObject.cs" />
+    <Compile Include="DAO\IdiomaDAO.cs" />
     <Compile Include="DAO\LivroDAO.cs" />
     <Compile Include="MasterPage.Master.cs">
       <DependentUpon>MasterPage.Master</DependentUpon>
@@ -234,6 +236,7 @@
     <Compile Include="MasterPage.Master.designer.cs">
       <DependentUpon>MasterPage.Master</DependentUpon>
     </Compile>
+    <Compile Include="Model\Idioma.cs" />
     <Compile Include="Model\Livro.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Apoio.cs" />

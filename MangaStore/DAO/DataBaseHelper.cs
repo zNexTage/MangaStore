@@ -86,5 +86,13 @@ namespace MangaStore.DAO
             return this.MyDbConnection;
         }
         #endregion
+
+        #region Enum
+        public enum SelectType 
+        {
+           All = 0,
+           One  = 1
+        }
+        #endregion
     }
 }

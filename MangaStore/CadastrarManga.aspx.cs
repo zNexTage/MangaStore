@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using MangaStore.BLL;
+using MangaStore.Model;
 
 namespace MangaStore
 {
@@ -18,6 +20,9 @@ namespace MangaStore
 
                 //Preenche o combo com os anos
                 PreencheComboAno();
+
+                //Preenche o combo com os idiomas
+                PreencheComboIdiomas();
             }
             catch (Exception err)
             {
@@ -93,6 +98,41 @@ namespace MangaStore
 
                 //Decrementa o ano para poder ficar de forma decrescente
                 iAnoAtual--;
+            }
+        }
+
+        /// <summary>
+        /// Preenche o combo com os idiomas
+        /// </summary>
+        private void PreencheComboIdiomas() 
+        {
+            List<object> listIdiomas = null;
+            IdiomaBLL idiomaBLL = null;
+
+            //Instancial a classe de validações
+            idiomaBLL = new IdiomaBLL();
+
+            //Realiza a chamada do Select dos idiomas
+            listIdiomas = idiomaBLL.MakeSelect(0);
+
+            //Verifica se a lista possui valores
+            if (listIdiomas != null) 
+            {
+                //Limpa o combo antes de preenche-lo
+                cboIdioma.Items.Clear();
+
+                //Determino o primeiro valor do combo
+                cboIdioma.Items.Add(new ListItem("Escolha um idioma...", "-1"));
+
+                //Realiza um laço pela lista
+                foreach (Idioma idioma in listIdiomas)
+                {
+                    //Preenche o combo
+                    cboIdioma.Items.Add(new ListItem(idioma.sIdioma, idioma.Id.ToString()));
+                }
+
+                //Adiciona a ultima opção
+                cboIdioma.Items.Add(new ListItem("Outro", "-2"));
             }
         }
     }

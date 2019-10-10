@@ -13,7 +13,7 @@ namespace MangaStore.DAO
         /// </summary>
         /// <param name="cod"></param>
         /// <returns></returns>
-        List<object> Select(int cod);
+        List<object> Select(int cod, DataBaseHelper.SelectType selectType);
 
         /// <summary>
         /// Realiza a inserção de dados

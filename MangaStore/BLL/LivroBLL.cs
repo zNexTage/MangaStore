@@ -26,6 +26,11 @@ namespace MangaStore.BLL
             LivroDAO.Insert(obj);
         }
 
+        public List<object> MakeSelect(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Realiza uma validação das propriedades de um objeto
         /// </summary>

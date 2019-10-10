@@ -72,8 +72,8 @@ namespace MangaStore.DAO
             //Fecha a conexao
             dbHelper.CloseConnection();
         }
-
-        public List<object> Select(int cod)
+        
+        public List<object> Select(int cod, DataBaseHelper.SelectType selectType)
         {
             throw new NotImplementedException();
         }
