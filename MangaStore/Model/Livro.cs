@@ -23,6 +23,7 @@ namespace MangaStore.Model
         public int? QuantidadeLivros { get; set; }
         public string Descricao { get; set; }
         public string BaseImage { get => baseImage; set => SetValueImage(value); }
+        public long? FkUsuario { get; set; }
 
         /// <summary>
         /// Valida se foi recebido o base64 para assim converter em array de bytes.

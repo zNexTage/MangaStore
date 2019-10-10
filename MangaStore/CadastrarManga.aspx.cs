@@ -10,7 +10,7 @@ using MangaStore.Model;
 namespace MangaStore
 {
     public partial class CadastrarManga : System.Web.UI.Page
-    {
+    {        
         protected void Page_Load(object sender, EventArgs e)
         {
             try
@@ -23,6 +23,9 @@ namespace MangaStore
 
                 //Preenche o combo com os idiomas
                 PreencheComboIdiomas();
+
+                //Preenche o combo com as editoras
+                PreencheComboEditoras();
             }
             catch (Exception err)
             {
@@ -113,7 +116,7 @@ namespace MangaStore
             idiomaBLL = new IdiomaBLL();
 
             //Realiza a chamada do Select dos idiomas
-            listIdiomas = idiomaBLL.MakeSelect(0);
+            listIdiomas = idiomaBLL.MakeSelect(-1);
 
             //Verifica se a lista possui valores
             if (listIdiomas != null) 
@@ -138,7 +141,36 @@ namespace MangaStore
 
         private void PreencheComboEditoras() 
         {
-            //TODO: Realiza o preenchimento do combo Editoras
+            EditoraBLL editoraBLL = null;
+            List<object> listEditora = null;
+
+            //Instancia um novo objeto
+            editoraBLL = new EditoraBLL();
+
+            /*Realiza o select das editoras. o -1 representa que nenhum id sera utilizado, portanto é um select geral;
+             Preenche o combo com a lista retornada
+             */
+            listEditora = editoraBLL.MakeSelect(-1);
+
+            //Limpa o combo
+            cboEditora.Items.Clear();
+
+            //Adiciona o primeiro item do combo
+            cboEditora.Items.Add(new ListItem("Selecione Uma Editora...", "-1"));
+
+            //Verifica se a lista retornou com valores
+            if (listEditora != null)
+            {
+                //Realiza um laço pelos dados
+                foreach (Editora editora in listEditora)
+                {
+                    //Preenche o combo com as editoras
+                    cboEditora.Items.Add(new ListItem(editora.sEditora, editora.IdEditora.ToString()));
+                }
+
+                //Adiciona o ultimo item da lista
+                cboEditora.Items.Add(new ListItem("Outro...", "0"));
+            }
         }
 
         private void PreencheComboGenero() 

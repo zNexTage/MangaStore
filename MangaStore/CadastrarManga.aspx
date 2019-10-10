@@ -57,10 +57,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <select id="cboEditora" class="form-control">
-                                <option value="-1"></option>
-                                <option value="500">TESTE</option>
-                            </select>
+                            <asp:DropDownList runat="server" ID="cboEditora" CssClass="form-control"></asp:DropDownList>                            
                         </div>
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
@@ -243,7 +240,7 @@
             var txtISBN = $('#txtISBN').val();
             var txtTitulo = $('#txtTitulo').val();
             var txtAutor = $('#txtAutor').val();
-            var cboEditora = $("#cboEditora option:selected").val();
+            var cboEditora = $("#<%=cboEditora.ClientID%> option:selected").val();
             var cboGenero = $("#cboGenero option:selected").val();
             var cboIdioma = $("#<%= cboIdioma.ClientID%> option:selected").val();
             var txtPreco = $('#txtPreco').val();

@@ -94,44 +94,21 @@ namespace MangaStore.DAO
         /// <param name="order"></param>
         public void MakeOrderBy(ref StringBuilder sbCommand, OrderBy order, string FieldName) 
         {
-            string Crescente = string.Format(" ORDER BY {0} ASC ", FieldName);
-            string Decrescente = string.Format(" ORDER BY {0} DESC ", FieldName);
-
-            //Verifica se é uma ordenação crescente de inteiro 
-            if (order.Equals(OrderBy.IntASC)) 
+            //Verifica se é uma ordenação crescente
+            if (order.Equals(OrderBy.ASC)) 
             {
                 //Adiciona ao comando o campo a ser ordenado
-                sbCommand.Append(Crescente);
+                sbCommand.Append(string.Format(" ORDER BY {0} ASC ", FieldName));
 
                 //Interrompe a execução do metodo
                 return;
             }
 
-            //Verifica se é uma ordenação decrescente de inteiro 
-            if (order.Equals(OrderBy.IntDESC)) 
+            //Verifica se é uma ordenação decrescente 
+            if (order.Equals(OrderBy.DESC)) 
             {
                 //Adiciona ao comando o campo a ser ordenado
-                sbCommand.Append(Decrescente);
-
-                //Interrompe a execução do metodo
-                return;
-            }
-
-            //Verifica se é uma ordenação alfabetica de um campo. forma crescente
-            if (order.Equals(OrderBy.TextASC))
-            {
-                //Adiciona ao comando o campo a ser ordenado
-                sbCommand.Append(Crescente);
-
-                //Interrompe a execução do metodo
-                return;
-            }
-
-            //Verifica se é uma ordenação alfabetica de um campo. forma decrescente
-            if (order.Equals(OrderBy.TextDESC))
-            {
-                //Adiciona ao comando o campo a ser ordenado
-                sbCommand.Append(Decrescente);
+                sbCommand.Append(string.Format(" ORDER BY {0} DESC ", FieldName));
 
                 //Interrompe a execução do metodo
                 return;
@@ -148,11 +125,9 @@ namespace MangaStore.DAO
 
         public enum OrderBy
         {
-            IntASC = 0,
-            IntDESC = 1,
-            TextASC = 2,
-            TextDESC = 3,
-            None = 4
+            None = 0,
+            ASC = 1,
+            DESC = 2
         }
         #endregion
     }

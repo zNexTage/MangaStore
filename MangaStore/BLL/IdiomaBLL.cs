@@ -25,8 +25,16 @@ namespace MangaStore.BLL
             //Instancia a dao de idiomas
             idiomaDAO = new IdiomaDAO();
 
-            //Recebe a lista com os idiomas
-            listIdiomas = idiomaDAO.Select(id, DataBaseHelper.SelectType.All, DataBaseHelper.OrderBy.TextASC);
+            if (id < 0)
+            {
+                //Recebe a lista com todos os idiomas
+                listIdiomas = idiomaDAO.Select(id, DataBaseHelper.SelectType.All, DataBaseHelper.OrderBy.ASC);
+            }
+            else
+            {
+                //Recebe a lista com somente um idioma
+                listIdiomas = idiomaDAO.Select(id, DataBaseHelper.SelectType.One, DataBaseHelper.OrderBy.ASC);
+            }
 
             //Retorna a lista com os idiomas
             return listIdiomas;
