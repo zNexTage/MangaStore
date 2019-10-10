@@ -213,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\EditoraBLL.cs" />
+    <Compile Include="BLL\GeneroBLL.cs" />
     <Compile Include="BLL\IdiomaBLL.cs" />
     <Compile Include="BLL\IValidationHelper.cs" />
     <Compile Include="BLL\LivroBLL.cs" />
@@ -228,6 +229,7 @@
     </Compile>
     <Compile Include="DAO\DataBaseHelper.cs" />
     <Compile Include="DAO\EditoraDAO.cs" />
+    <Compile Include="DAO\GeneroDAO.cs" />
     <Compile Include="DAO\IDataAccessObject.cs" />
     <Compile Include="DAO\IdiomaDAO.cs" />
     <Compile Include="DAO\LivroDAO.cs" />
@@ -239,6 +241,7 @@
       <DependentUpon>MasterPage.Master</DependentUpon>
     </Compile>
     <Compile Include="Model\Editora.cs" />
+    <Compile Include="Model\Genero.cs" />
     <Compile Include="Model\Idioma.cs" />
     <Compile Include="Model\Livro.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

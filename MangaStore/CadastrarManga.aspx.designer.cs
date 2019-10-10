@@ -24,6 +24,15 @@ namespace MangaStore
         protected global::System.Web.UI.WebControls.DropDownList cboEditora;
 
         /// <summary>
+        /// Controle cboGenero.
+        /// </summary>
+        /// <remarks>
+        /// Campo gerado automaticamente.
+        /// Modificar a declaração do campo de movimento do arquivo de designer para o arquivo code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cboGenero;
+
+        /// <summary>
         /// Controle cboIdioma.
         /// </summary>
         /// <remarks>

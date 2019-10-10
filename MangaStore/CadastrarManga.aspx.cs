@@ -26,6 +26,9 @@ namespace MangaStore
 
                 //Preenche o combo com as editoras
                 PreencheComboEditoras();
+
+                //Preenche o combo com os generos
+                PreencheComboGenero();
             }
             catch (Exception err)
             {
@@ -62,8 +65,11 @@ namespace MangaStore
             //Limpa o combo para evitar duplicação
             cboMes.Items.Clear();
 
+            //Define um primeiro valor do combo
+            cboMes.Items.Add(new ListItem("", "-1"));
+
             //Realiza um laço pelo array de meses e adiciona ao combox Mes
-            foreach(string sMes in sMeses)
+            foreach (string sMes in sMeses)
             {
                 //Splita o nome do mes e o seu valor numerico no array
                 sGetMes = sMes.Split(':');
@@ -93,8 +99,14 @@ namespace MangaStore
             //Calcula a diferença entre o ano atual e o ano de referencia
             iDiferencaAnos = dtAtualTime.Year - iAnoReferencia;
 
+            //Limpa o combo
+            cboAno.Items.Clear();
+
+            //Define o primeiro valor do combo
+            cboAno.Items.Add(new ListItem("", "-1"));
+
             //Faz um laço para poder preencher o combo com os meses de forma decrescente
-            for(; iContador <= iDiferencaAnos; iContador++)
+            for (; iContador <= iDiferencaAnos; iContador++)
             {
                 //Adiciona os meses no combo
                 cboAno.Items.Add(new ListItem(iAnoAtual.ToString(), iAnoAtual.ToString()));
@@ -139,6 +151,9 @@ namespace MangaStore
             }
         }
 
+        /// <summary>
+        /// Preenche o combo com os dados vindos do banco de dados
+        /// </summary>
         private void PreencheComboEditoras() 
         {
             EditoraBLL editoraBLL = null;
@@ -173,9 +188,39 @@ namespace MangaStore
             }
         }
 
+        /// <summary>
+        /// Preenche o combo de generos com os dados vindos do banco de dados
+        /// </summary>
         private void PreencheComboGenero() 
         {
-            //TODO: Realiza o preenchimento do combo genero
+            GeneroBLL generoBLL = null;
+            List<object> listGenero = null;
+
+            //Cria um novo objeto
+            generoBLL = new GeneroBLL();
+
+            //Realiza o select de todos os generos
+            listGenero = generoBLL.MakeSelect(-1);
+
+            //Se a lista retornada for diferente de null
+            if(listGenero != null)
+            {
+                //Limpa o combo 
+                cboGenero.Items.Clear();
+
+                //Preenche o combo com o primeiro valor
+                cboGenero.Items.Add(new ListItem("Escolha um gênero...", "-1"));
+
+                //Faz um laço pela lista de genero
+                foreach (Genero genero in listGenero) 
+                {
+                    //Preenche o combo com os dados 
+                    cboGenero.Items.Add(new ListItem(genero.sGenero, genero.IdGenero.ToString()));
+                }
+
+                //Preenche o combo com o ultimo valor 
+                cboGenero.Items.Add(new ListItem("Outro...", "0"));
+            }
         }
     }
 }
