@@ -78,6 +78,83 @@ namespace MangaStore.DAO
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Retorna um livro pela sua ISBN
+        /// </summary>
+        /// <param name="ISBN"></param>
+        /// <param name="selectType"></param>
+        /// <param name="orderBy"></param>
+        /// <returns></returns>
+        public object Select(string Isbn,  DataBaseHelper.OrderBy orderBy) 
+        {
+            Livro livro = null;
+            SqlCommand sqlCmd = null;
+            SqlDataReader sqlReader = null;
+            StringBuilder sbCommand = null;
+            DataBaseHelper dbHelper = null;
+
+            //Cria um novo StringBuilder
+            sbCommand = new StringBuilder();
+
+            //Inicializa o dbhelper
+            dbHelper = DataBaseHelper.Create();
+
+            //Inicializa o sqlcommand
+            sqlCmd = new SqlCommand();
+
+            //Monta o comando
+            sbCommand.Append(" SELECT * FROM TBL_LIVRO ");
+            sbCommand.Append(" WHERE ISBN_LIVRO = @ISBN ");
+
+            //Verifica se acrescentara a query uma ordenação
+            if(orderBy != DataBaseHelper.OrderBy.None) 
+            {
+                //Cria a ordenação e acrescenta ao comando
+                dbHelper.MakeOrderBy(ref sbCommand, orderBy, "ISBN");
+            }
+
+            //Cria o parametro a ser usado na query
+            Parameters pIsbn = new Parameters("@ISBN", Isbn, SqlDbType.VarChar);
+
+            //Constroi os parametros e adiciona ao sqlcommand
+            dbHelper.BuildParameters(ref sqlCmd, pIsbn);
+
+            //Atribui o comando no sqlcommand
+            sqlCmd.CommandText = sbCommand.ToString();
+
+            //Atribui a conexao ao sqlcommand
+            sqlCmd.Connection = dbHelper.ReturnConnection();
+
+            //Executa a leitura dos dados
+            sqlReader = sqlCmd.ExecuteReader();
+
+            //Inicializa o objeto
+            livro = new Livro();
+
+            //Define como -1, pois caso não tenha encotrado nenhum valor ao buscar no banco, o -1 simbolizara que nada foi enctrado. O -1 é utilizado para realizar
+            //uma verificação. if(livro.cdlivro > 0 ) livro encotrado else livro nao encotrado
+            livro.CdLivro = -1;
+
+            //Verifica se foi encotrado algum valor
+            if (sqlReader.HasRows) 
+            {
+                //Realiza um laço para recuperar as informações retornadas do banco
+                while (sqlReader.Read()) 
+                {
+                    //TODO: Atribuir os valores do banco nas propriedades
+                    livro.CdLivro = Convert.ToInt32(sqlReader[""]);
+                    livro.Isbn = Convert.ToString(sqlReader[""]);
+                    livro.Titulo = Convert.ToString(sqlReader[""]);
+                    livro.Autor = Convert.ToString(sqlReader[""]);
+                    livro.CdLivro = Convert.ToInt32(sqlReader[""]);
+                    livro.CdLivro = Convert.ToInt32(sqlReader[""]);
+                    livro.CdLivro = Convert.ToInt32(sqlReader[""]);
+                }
+            }
+
+            return livro;
+        }
+
         public void Update(int cod, object obj)
         {
             throw new NotImplementedException();

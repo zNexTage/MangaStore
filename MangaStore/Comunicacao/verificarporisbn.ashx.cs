@@ -1,7 +1,12 @@
-﻿using System;
+﻿using MangaStore.Model;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
+using Newtonsoft.Json;
+using MangaStore.Util;
+using MangaStore.BLL;
 
 namespace MangaStore.Comunicacao
 {
@@ -13,8 +18,14 @@ namespace MangaStore.Comunicacao
 
         public void ProcessRequest(HttpContext context)
         {
-            context.Response.ContentType = "text/plain";
-            context.Response.Write("Olá, Mundo");
+            string ISBN = "";
+            Livro livro = null;
+            LivroBLL livroBll = null; ;
+
+            //Recebe o ISBN do livro
+            livro = JsonConvert.DeserializeObject<Livro>(Apoio.StringFromStreamReader(context.Request.InputStream));
+
+            livroBll = new LivroBLL();
         }
 
         public bool IsReusable

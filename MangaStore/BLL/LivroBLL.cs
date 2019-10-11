@@ -32,6 +32,21 @@ namespace MangaStore.BLL
         }
 
         /// <summary>
+        /// Retorna um livro pela sua ISBN
+        /// </summary>
+        /// <param name="ISBN"></param>
+        /// <returns></returns>
+        public object MakeSelect(string ISBN, DataBaseHelper.OrderBy orderBy) 
+        {
+            Livro Livro = null;
+            LivroDAO livroDAO = null;
+
+            livroDAO.Select(ISBN, orderBy);
+
+            return Livro;
+        }
+
+        /// <summary>
         /// Realiza uma validação das propriedades de um objeto
         /// </summary>
         /// <param name="obj"></param>

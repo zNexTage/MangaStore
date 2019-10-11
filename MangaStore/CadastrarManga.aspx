@@ -28,8 +28,7 @@
                             </label>
                         </div>
                         <div class="col-lg-3">
-                            <input type="text" id="txtISBN" onfocusout="VerificarCampoISBN();" class="form-control" />
-                            <Button id="cmdVerificarPorISBN"  Style="opacity:0;" OnClick="VerificarPorISBN();return false;" ></Button>
+                            <input type="text" id="txtISBN" onfocusout="VerificarPorISBN();" class="form-control" />                           
                         </div>
                     </div>
                     <hr />
@@ -153,22 +152,29 @@
         })
 
         //Verifica a quantidade de caracteres digitados no campo de texto.
-        function VerificarCampoISBN()
+        function VerificarPorISBN()
         {
             var txtISBN = $('#txtISBN').val();
-            var cmdVerificar = document.getElementById("cmdVerificarPorISBN");
+            var jData =
+            {
+                ISBN:txtISBN
+            }
 
             //Verifica se o usuario digitou corretamente a quantidade de digitos da ISBN
             if (txtISBN.length == 17)
             {
-                //Força o click do botao verificar ISBN
-                cmdVerificar.click();
-            }
-        }
+                $.ajax({
+                    type: "POST",
+                    url: "Comunicacao/verificarporisbn.ashx",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(jData),
+                    success: function (data)
+                    {
 
-        function VerificarPorISBN()
-        {
-            alert('oi');
+                    }
+                })
+            }
         }
 
         //Adiciona a imagem upada no componente Image.
