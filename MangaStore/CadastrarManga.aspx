@@ -28,7 +28,8 @@
                             </label>
                         </div>
                         <div class="col-lg-3">
-                            <input type="text" id="txtISBN" class="form-control" />
+                            <input type="text" id="txtISBN" onfocusout="VerificarCampoISBN();" class="form-control" />
+                            <Button id="cmdVerificarPorISBN"  Style="opacity:0;" OnClick="VerificarPorISBN();return false;" ></Button>
                         </div>
                     </div>
                     <hr />
@@ -145,47 +146,31 @@
     <script type="text/javascript" src="Scripts/jQueryMask/dist/jquery.mask.min.js"></script>
 
     <script>
-        function maskField(id)
-        {
-            var component = document.getElementById(id);
-            //alert(component.value.length);
-            if (component.length == 7)
-            {
-                alert('oi');
-            }
-        }
 
         $(document).ready(function ($) {
             $('#txtPreco').mask('000.000.000.000.000,00', { reverse: true });
             $('#txtISBN').mask('000-00-000-0000-0');
-            
-            $('#txtDtPublicacao').datepicker({
-                changeMonth: true,
-                changeYear: true,
-                showButtonPanel: true,
-                dateFormat: 'MM yy',
-                yearRange: "-100:+0",
-                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'],
-                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                onClose: function (dateText, inst) {
-                    var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                    month = parseInt(month) + parseInt(1);
-                    if (month <= 9) {
-                        month = "0" + month;
-                    }
-                    $(this).val(month+ "/" + year);
-                }
-                //changeMonth: true,
-                //changeYear: true,
-                //showButtonPanel: true,
-                //dateFormat: 'dd/mm/yy',
-
-            });
         })
+
+        //Verifica a quantidade de caracteres digitados no campo de texto.
+        function VerificarCampoISBN()
+        {
+            var txtISBN = $('#txtISBN').val();
+            var cmdVerificar = document.getElementById("cmdVerificarPorISBN");
+
+            //Verifica se o usuario digitou corretamente a quantidade de digitos da ISBN
+            if (txtISBN.length == 17)
+            {
+                //Força o click do botao verificar ISBN
+                cmdVerificar.click();
+            }
+        }
+
+        function VerificarPorISBN()
+        {
+            alert('oi');
+        }
+
         //Adiciona a imagem upada no componente Image.
         function loadImageFileAsURL() {
             var filesSelected = document.getElementById("uplCapa").files;
@@ -220,6 +205,7 @@
             document.getElementById("uplCapa").click();
         }
 
+        //Remove a imagem atual e coloca a padrão no lugar
         function removerImagem() {
             $('#imgCapa').attr('src', "Imagem/Icon/iconAdd.jpg");
             $('#imgCapa').attr('class', "rounded float-left");

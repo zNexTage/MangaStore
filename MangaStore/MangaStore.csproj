@@ -166,6 +166,7 @@
     <Content Include="Scripts\jQueryMask\package.json" />
     <Content Include="Scripts\jQueryMask\README.md" />
     <Content Include="Comunicacao\cadastranovolivro.ashx" />
+    <Content Include="Comunicacao\verificarporisbn.ashx" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
     <Content Include="Scripts\jQueryMask\dist\jquery.mask.js" />
     <Content Include="Scripts\jQueryMask\dist\jquery.mask.min.js" />
@@ -226,6 +227,9 @@
     </Compile>
     <Compile Include="Comunicacao\cadastranovolivro.ashx.cs">
       <DependentUpon>cadastranovolivro.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Comunicacao\verificarporisbn.ashx.cs">
+      <DependentUpon>verificarporisbn.ashx</DependentUpon>
     </Compile>
     <Compile Include="DAO\DataBaseHelper.cs" />
     <Compile Include="DAO\EditoraDAO.cs" />
