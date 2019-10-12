@@ -36,13 +36,18 @@ namespace MangaStore.BLL
         /// </summary>
         /// <param name="ISBN"></param>
         /// <returns></returns>
-        public object MakeSelect(string ISBN, DataBaseHelper.OrderBy orderBy) 
+        public object MakeSelect(string ISBN, DataBaseHelper.OrderBy orderBy)
         {
             Livro Livro = null;
             LivroDAO livroDAO = null;
 
-            livroDAO.Select(ISBN, orderBy);
+            //Inicializa a dao de livros
+            livroDAO = new LivroDAO();
 
+            //Realiza o select e devolve os dados do livro
+            Livro = (Livro)livroDAO.Select(ISBN, orderBy);
+
+            //Retorna o livro
             return Livro;
         }
 
@@ -83,34 +88,34 @@ namespace MangaStore.BLL
                 return Apoio.RetornaMensagemCampoObrigatorio("Autor");
             }
 
-            //Verifica se a propriedade Autor está com o valor -1 (Vazio)
-            if (livro.FkEditora.Equals(-1))
+            //Verifica se a propriedade Editora está vazia
+            if (string.IsNullOrEmpty(livro.Editora.Trim()))
             {
                 /*
-                 * Se estiver vazia retorna uma mensagem alertando que a propriedade esta null, em outras palavras
-                 * o usuário não escolheu uma opção no combo
+                 * Se estiver vazia retorna uma mensagem alertando que a propriedade esta null.
+                 Em outras palavras, significa que o usuário não preencheu o campo Editora
                  */
-                return Apoio.ComboBoxInvalido("Editora");
+                return Apoio.RetornaMensagemCampoObrigatorio("Editora");
             }
 
-            //Verifica se a propriedade Genero está com o valor -1 (Vazio)
-            if (livro.FkGenero.Equals(-1))
+            //Verifica se a propriedade Genero está vazia
+            if (string.IsNullOrEmpty(livro.Genero.Trim()))
             {
                 /*
-                * Se estiver vazia retorna uma mensagem alertando que a propriedade esta null, em outras palavras
-                * o usuário não escolheu uma opção no combo
+                * Se estiver vazia retorna uma mensagem alertando que a propriedade esta null.
+                 Em outras palavras, significa que o usuário não preencheu o campo Genero
                 */
-                return Apoio.ComboBoxInvalido("Genêro");
+                return Apoio.RetornaMensagemCampoObrigatorio("Genêro");
             }
 
-            //Verifica se a propriedade Idioma está com o valor -1 (Vazio)
-            if (livro.FkIdioma.Equals(-1))
+            //Verifica se a propriedade Idioma está vazia
+            if (string.IsNullOrEmpty(livro.Idioma.Trim()))
             {
                 /*
-                * Se estiver vazia retorna uma mensagem alertando que a propriedade esta null, em outras palavras
-                * o usuário não escolheu uma opção no combo
+                * Se estiver vazia retorna uma mensagem alertando que a propriedade esta null.
+                 Em outras palavras, significa que o usuário não preencheu o campo Idioma
                 */
-                return Apoio.ComboBoxInvalido("Idioma");
+                return Apoio.RetornaMensagemCampoObrigatorio("Idioma");
             }
 
             //Verifica se a propriedade Preco está vazia
@@ -134,13 +139,13 @@ namespace MangaStore.BLL
             //Verifica se a propriedade DataPublicacao possui o valor minimo do DateTime
             if (livro.DataPublicacao.Equals(DateTime.MinValue))
             {
-                //Se tiver significa que o usuário não digitou uma data no campo de texto
-                return Apoio.RetornaMensagemCampoObrigatorio("Data Publicação");
+                //Se tiver significa que o usuário escolheu uma data (mes e ano)
+                return "Por favor! Selecione um mês e um ano";
             }
 
             //Verifica se a propriedade QtdPaginas está vazia
             if (string.IsNullOrEmpty(livro.QuantidadeLivros.ToString().Trim()))
-            { 
+            {
                 //Verifica se a propriedade QtdPaginas está vazia
                 return Apoio.RetornaMensagemCampoObrigatorio("Quantidade Livros");
             }

@@ -11,11 +11,11 @@ namespace MangaStore.Model
         public long CdLivro { get; set; }
         public string Isbn { get; set; }
         public string Titulo { get; set; }
-        public string Autor { get; set; }
-        public long FkEditora { get; set; }
-        public long FkGenero { get; set; }
-        public long FkIdioma { get; set; }
-        public double? Preco { get; set; }
+        public string Autor { get; set; }        
+        public string Editora { get; set; }        
+        public string Genero { get; set; }
+        public string Idioma { get; set; }
+        public decimal? Preco { get; set; }
         public int? QtdPaginas { get; set; }
         public DateTime DataPublicacao { get; set; }
         private string baseImage;

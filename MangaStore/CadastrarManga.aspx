@@ -57,7 +57,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <asp:DropDownList runat="server" ID="cboEditora" CssClass="form-control"></asp:DropDownList>                            
+                            <input type="text" id="txtEditora" class="form-control" />                            
                         </div>
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
@@ -65,7 +65,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <asp:DropDownList runat="server" ID="cboGenero" CssClass="form-control"></asp:DropDownList>                            
+                            <input type="text" id="txtGenero" class="form-control" />                             
                         </div>
                     </div>
                     <div class="row">
@@ -75,7 +75,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <asp:DropDownList runat="server" ID="cboIdioma" CssClass="form-control"></asp:DropDownList>                            
+                            <input type="text" id="txtIdioma" class="form-control" />                              
                         </div>
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
@@ -148,30 +148,47 @@
 
         $(document).ready(function ($) {
             $('#txtPreco').mask('000.000.000.000.000,00', { reverse: true });
-            $('#txtISBN').mask('000-00-000-0000-0');
+            //$('#txtISBN').mask('000-00-000-0000-0');
         })
 
         //Verifica a quantidade de caracteres digitados no campo de texto.
         function VerificarPorISBN()
         {
             var txtISBN = $('#txtISBN').val();
-            var jData =
-            {
-                ISBN:txtISBN
-            }
+            
 
             //Verifica se o usuario digitou corretamente a quantidade de digitos da ISBN
-            if (txtISBN.length == 17)
+            if (true)
             {
+                //var desired = txtISBN.replace(/[^\w\s]/gi, '')
+
+                var jData =
+                {
+                    ISBN: txtISBN
+                }
+
                 $.ajax({
-                    type: "POST",
-                    url: "Comunicacao/verificarporisbn.ashx",
-                    contentType: "application/json",
-                    dataType: "json",
-                    data: JSON.stringify(jData),
+                    type: "GET",
+                    url: "https://www.googleapis.com/books/v1/volumes?q=isbn:" + txtISBN,
                     success: function (data)
                     {
-
+                        console.log(data);
+                        <%--$('#txtISBN').val();
+                        $('#txtTitulo').val();
+                        $('#txtAutor').val();
+                        $("#txtEditora").val(data.Editora.IdEditora);
+                        $("#txtGenero").val(data.Genero.IdGenero);
+                        $("#txtIdioma").val(data.Idioma.IdIdioma);                        
+                        $('#txtQtdPagina').val(data.QtdPaginas);
+                        $('#<%=cboMes.ClientID%>').prop('selectedIndex', 0);
+                        $('#<%=cboAno.ClientID%>').prop('selectedIndex', 0);
+                        $('#imgCapa').attr('class', "rounded float-left img-thumbnail");
+                        $('#imgCapa').attr('style', "cursor:pointer;min-width:182.96px;min-height:206.42px;max-width:182.96px;max-height:206.42px;object-fit: cover;margin-bottom:10px;");
+                        $("#imgCapa").attr("src","data:image/png;base64, "+ data.CapaLivro);--%>
+                    },
+                    error: function ()
+                    {
+                        alert('erro');
                     }
                 })
             }
@@ -220,7 +237,6 @@
             $('#imgCapa').css({ 'width': '40px', 'cursor': 'pointer' });
             $("#btnRemoverImagem").css({ "display": "none" });
         }
-
     </script>
     <script>
         //Manda as informações para o serviço e cadastra o livro
@@ -229,15 +245,17 @@
             var txtISBN = $('#txtISBN').val();
             var txtTitulo = $('#txtTitulo').val();
             var txtAutor = $('#txtAutor').val();
-            var cboEditora = $("#<%=cboEditora.ClientID%> option:selected").val();
-            var cboGenero = $("#<%=cboGenero.ClientID%> option:selected").val();
-            var cboIdioma = $("#<%= cboIdioma.ClientID%> option:selected").val();
+            var txtEditora = $("#txtEditora").val();
+            var txtGenero = $("#txtGenero").val();
+            var txtIdioma = $("#txtIdioma").val();
             var txtPreco = $('#txtPreco').val();
             var txtQtdPaginas = $('#txtQtdPagina').val();
             var txtDtPublicacao = $("#<%=cboMes.ClientID%> option:selected").val() + "/" + $("#<%= cboAno.ClientID%> option:selected").val();
             var imgCapa = $("#imgCapa").attr("src");
             var txtQuantidade = $('#txtQuantidade').val();
             var txtDescricao = $('#txtDescrição').val();
+
+            alert(txtPreco);
 
             //Verifica se o source do componente image é o padrão
             if (imgCapa == "Imagem/Icon/iconAdd.jpg") {
@@ -255,7 +273,7 @@
             }
 
             //Verifica se o usuário não colocou uma data
-            if (txtDtPublicacao.toString().trim() == "") {
+            if (txtDtPublicacao.toString().trim() == "-1/-1") {
                 /*
                  * Se ele não colocou uma data eu defino o valor da variavel com o valor minimo do datetime
                  */
@@ -274,9 +292,9 @@
                 Isbn: txtISBN,
                 Titulo: txtTitulo,
                 Autor: txtAutor,
-                FkEditora: cboEditora,
-                FkGenero: cboGenero,
-                FkIdioma: cboIdioma,
+                Editora: txtEditora,
+                Genero: txtGenero,
+                Idioma: txtIdioma,
                 Preco: txtPreco,
                 QtdPaginas: txtQtdPaginas,
                 DataPublicacao: txtDtPublicacao,
@@ -312,9 +330,9 @@
             $('#txtISBN').val('');
             $('#txtTitulo').val('');
             $('#txtAutor').val('');
-            $("#cboEditora#elem").prop('selectedIndex', 0);
-            $("#cboGenero#elem").prop('selectedIndex', 0);
-            $("#<%=cboIdioma.ClientID%>#elem").prop('selectedIndex', 0);
+            $("#txtEditora").val('');
+            $("#txtGenero").val('');
+            $("#txtIdioma").val('');
             $('#txtPreco').val('');
             $('#txtQtdPagina').val('');
             $('#<%=cboMes.ClientID%>').prop('selectedIndex', 0);

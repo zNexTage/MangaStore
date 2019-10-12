@@ -60,5 +60,21 @@ namespace MangaStore.Util
             //Retorna a mensagem
             return string.Format("Por favor! Selecione um/uma {0} corretamente!", NomeCombo);
         }
+
+        /// <summary>
+        /// Converte um objeto para JSON
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string ObjectToJson(object obj) 
+        {            
+            string Json;
+
+            //Serializa o objeto em JSON
+            Json = JsonConvert.SerializeObject(obj);
+
+            //Retorna o JSON
+            return Json;
+        }
     }
 }

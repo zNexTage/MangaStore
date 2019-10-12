@@ -15,33 +15,6 @@ namespace MangaStore
     {
 
         /// <summary>
-        /// Controle cboEditora.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Modificar a declaração do campo de movimento do arquivo de designer para o arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList cboEditora;
-
-        /// <summary>
-        /// Controle cboGenero.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Modificar a declaração do campo de movimento do arquivo de designer para o arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList cboGenero;
-
-        /// <summary>
-        /// Controle cboIdioma.
-        /// </summary>
-        /// <remarks>
-        /// Campo gerado automaticamente.
-        /// Modificar a declaração do campo de movimento do arquivo de designer para o arquivo code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList cboIdioma;
-
-        /// <summary>
         /// Controle cboMes.
         /// </summary>
         /// <remarks>

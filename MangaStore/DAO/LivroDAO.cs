@@ -34,9 +34,8 @@ namespace MangaStore.DAO
 
             //Monta o comando
             sbCommand.Append(" INSERT INTO TBL_LIVRO  ");
-            sbCommand.Append(" (ISBN_LIVRO, TITULO_LIVRO, AUTOR_LIVRO, FK_EDITORA, FK_GENERO, FK_IDIOMA, PRECO_LIVRO, QTD_PAGINAS_LIVRO, DATA_PUBLICACAO_LIVRO, CAPA_LIVRO, QUANTIDADE_LIVRO, DESCRICAO_LIVRO)  ");
-            sbCommand.Append(" VALUES (@Isbn, @Titulo, @Autor, @FkEditora, @FkEditora, @FkIdioma, @Preco, @QtdPaginas, @DataPublicacao, @CapaLivro, @QuantidadeLivros, @Descricao) ");
-                        
+            sbCommand.Append(" (ISBN_LIVRO, TITULO_LIVRO, AUTOR_LIVRO, EDITORA_LIVRO, GENERO_LIVRO, IDIOMA_LIVRO, PRECO_LIVRO, QTD_PAGINAS_LIVRO, DATA_PUBLICACAO_LIVRO, CAPA_LIVRO, QUANTIDADE_LIVRO, DESCRICAO_LIVRO)  ");
+            sbCommand.Append(" VALUES (@Isbn, @Titulo, @Autor, @Editora,@Genero, @Idioma, @Preco, @QtdPaginas, @DataPublicacao, @CapaLivro, @QuantidadeLivros, @Descricao) ");                        
             //Inicializa o objeto DataBaseHelper
             dbHelper = DataBaseHelper.Create();
 
@@ -50,10 +49,10 @@ namespace MangaStore.DAO
             Parameters pIsbn = new Parameters("@Isbn", livro.Isbn, SqlDbType.VarChar);
             Parameters pTitulo = new Parameters("@Titulo", livro.Titulo, SqlDbType.VarChar);
             Parameters pAutor = new Parameters("@Autor", livro.Autor, SqlDbType.VarChar);
-            Parameters pEditora = new Parameters("@FkEditora", livro.FkEditora, SqlDbType.Int);
-            Parameters pGenero = new Parameters("@FkGenero", livro.FkGenero, SqlDbType.Int);
-            Parameters pIdioma = new Parameters("@FkIdioma", livro.FkIdioma, SqlDbType.Int);
-            Parameters pPreco = new Parameters("@Preco", livro.Preco, SqlDbType.Money);
+            Parameters pEditora = new Parameters("@Editora", livro.Editora, SqlDbType.VarChar);
+            Parameters pGenero = new Parameters("@Genero", livro.Genero, SqlDbType.VarChar);
+            Parameters pIdioma = new Parameters("@Idioma", livro.Idioma, SqlDbType.VarChar);
+            Parameters pPreco = new Parameters("@Preco", livro.Preco, SqlDbType.Decimal);
             Parameters pQuantidadePaginas = new Parameters("@QtdPaginas", livro.QtdPaginas, SqlDbType.Int);
             Parameters pDataPublicacao = new Parameters("@DataPublicacao", livro.DataPublicacao, SqlDbType.DateTime);
             Parameters pCapaLivro = new Parameters("@CapaLivro", livro.CapaLivro, SqlDbType.VarBinary);
@@ -103,7 +102,11 @@ namespace MangaStore.DAO
             sqlCmd = new SqlCommand();
 
             //Monta o comando
-            sbCommand.Append(" SELECT * FROM TBL_LIVRO ");
+            sbCommand.Append(" SELECT LIVRO.COD_LIVRO, LIVRO.TITULO_LIVRO, LIVRO.AUTOR_LIVRO, LIVRO.ISBN_LIVRO, EDITORA.ID_EDITORA,EDITORA.EDITORA, GENERO.ID_GENERO, GENERO.GENERO, IDIOMA.ID_IDIOMA, IDIOMA.IDIOMA, LIVRO.PRECO_LIVRO, LIVRO.QTD_PAGINAS_LIVRO, LIVRO.DATA_PUBLICACAO_LIVRO, LIVRO.QUANTIDADE_LIVRO, LIVRO.CAPA_LIVRO, LIVRO.DESCRICAO_LIVRO ");
+            sbCommand.Append(" FROM TBL_LIVRO LIVRO ");
+            sbCommand.Append(" INNER JOIN TBL_EDITORA EDITORA ON EDITORA.ID_EDITORA = LIVRO.FK_EDITORA ");
+            sbCommand.Append(" INNER JOIN TBL_GENEROS GENERO ON GENERO.ID_GENERO = LIVRO.FK_GENERO ");
+            sbCommand.Append(" INNER JOIN TBL_IDIOMAS IDIOMA ON IDIOMA.ID_IDIOMA = LIVRO.FK_IDIOMA ");
             sbCommand.Append(" WHERE ISBN_LIVRO = @ISBN ");
 
             //Verifica se acrescentara a query uma ordenação
@@ -125,6 +128,9 @@ namespace MangaStore.DAO
             //Atribui a conexao ao sqlcommand
             sqlCmd.Connection = dbHelper.ReturnConnection();
 
+            //Abre conexao com o banco de dados
+            dbHelper.OpenConnection();
+
             //Executa a leitura dos dados
             sqlReader = sqlCmd.ExecuteReader();
 
@@ -141,17 +147,27 @@ namespace MangaStore.DAO
                 //Realiza um laço para recuperar as informações retornadas do banco
                 while (sqlReader.Read()) 
                 {
-                    //TODO: Atribuir os valores do banco nas propriedades
-                    livro.CdLivro = Convert.ToInt32(sqlReader[""]);
-                    livro.Isbn = Convert.ToString(sqlReader[""]);
-                    livro.Titulo = Convert.ToString(sqlReader[""]);
-                    livro.Autor = Convert.ToString(sqlReader[""]);
-                    livro.CdLivro = Convert.ToInt32(sqlReader[""]);
-                    livro.CdLivro = Convert.ToInt32(sqlReader[""]);
-                    livro.CdLivro = Convert.ToInt32(sqlReader[""]);
+                    //Atribui os valores nas propriedades
+                    livro.CdLivro = Convert.ToInt32(sqlReader["COD_LIVRO"]);
+                    livro.Isbn = Convert.ToString(sqlReader["ISBN_LIVRO"]);
+                    livro.Titulo = Convert.ToString(sqlReader["TITULO_LIVRO"]);
+                    livro.Autor = Convert.ToString(sqlReader["AUTOR_LIVRO"]);
+                    livro.Editora = Convert.ToString(sqlReader["EDITORA"]);
+                    livro.Genero = Convert.ToString(sqlReader["GENERO"]);
+                    livro.Idioma = Convert.ToString(sqlReader["IDIOMA"]);
+                    livro.Preco = (float)(sqlReader["PRECO_LIVRO"]);
+                    livro.QtdPaginas = Convert.ToInt32(sqlReader["QTD_PAGINAS_LIVRO"]);
+                    livro.DataPublicacao = Convert.ToDateTime(sqlReader["DATA_PUBLICACAO_LIVRO"]);
+                    livro.QuantidadeLivros = Convert.ToInt32(sqlReader["QUANTIDADE_LIVRO"]);
+                    livro.CapaLivro = (byte[])(sqlReader["CAPA_LIVRO"]);
+                    livro.Descricao = Convert.ToString(sqlReader["DESCRICAO_LIVRO"]);
                 }
             }
 
+            //Fecha a conexao com o banco de dados
+            dbHelper.CloseConnection();
+
+            //Retona os dados do livro
             return livro;
         }
 

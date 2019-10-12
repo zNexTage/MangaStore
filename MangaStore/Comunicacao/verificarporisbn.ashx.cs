@@ -18,14 +18,31 @@ namespace MangaStore.Comunicacao
 
         public void ProcessRequest(HttpContext context)
         {
-            string ISBN = "";
             Livro livro = null;
-            LivroBLL livroBll = null; ;
+            LivroBLL livroBll = null;
 
-            //Recebe o ISBN do livro
-            livro = JsonConvert.DeserializeObject<Livro>(Apoio.StringFromStreamReader(context.Request.InputStream));
+            try 
+            {
+                //Recebe o ISBN do livro
+                livro = JsonConvert.DeserializeObject<Livro>(Apoio.StringFromStreamReader(context.Request.InputStream));
 
-            livroBll = new LivroBLL();
+                //Inicializa a BLL 
+                livroBll = new LivroBLL();
+
+                //Realiza um select pelo isbn do livro
+                livro = (Livro)livroBll.MakeSelect(livro.Isbn, DAO.DataBaseHelper.OrderBy.None);
+
+                //Verifica se foi retornado algum dado
+                if (livro != null)
+                {
+                    //Devolve o livro em JSON
+                    context.Response.Write(Apoio.ObjectToJson(livro));
+                }
+            }
+            catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
         }
 
         public bool IsReusable

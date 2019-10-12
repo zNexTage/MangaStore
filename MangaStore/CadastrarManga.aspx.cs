@@ -20,15 +20,6 @@ namespace MangaStore
 
                 //Preenche o combo com os anos
                 PreencheComboAno();
-
-                //Preenche o combo com os idiomas
-                PreencheComboIdiomas();
-
-                //Preenche o combo com as editoras
-                PreencheComboEditoras();
-
-                //Preenche o combo com os generos
-                PreencheComboGenero();
             }
             catch (Exception err)
             {
@@ -41,9 +32,9 @@ namespace MangaStore
         /// </summary>
         private void PreencheComboMes() 
         {
-            string sKey = "";
-            string sValue = "";
-            string[] sGetMes = null;
+            string sKey;
+            string sValue;
+            string[] sGetMes;
 
             //Atribui ao array os meses, junto com sua representação numérica
             string[] sMeses = new string[]
@@ -90,7 +81,7 @@ namespace MangaStore
         /// </summary>
         private void PreencheComboAno()
         {
-            int iDiferencaAnos = 0;
+            int iDiferencaAnos;
             int iAnoReferencia = 1950;
             int iContador = 0;
             int iAnoAtual = DateTime.Now.Year;
@@ -112,113 +103,6 @@ namespace MangaStore
 
                 //Decrementa o ano para poder ficar de forma decrescente
                 iAnoAtual--;
-            }
-        }
-
-        /// <summary>
-        /// Preenche o combo com os idiomas
-        /// </summary>
-        private void PreencheComboIdiomas() 
-        {
-            List<object> listIdiomas = null;
-            IdiomaBLL idiomaBLL = null;
-
-            //Instancial a classe de validações
-            idiomaBLL = new IdiomaBLL();
-
-            //Realiza a chamada do Select dos idiomas
-            listIdiomas = idiomaBLL.MakeSelect(-1);
-
-            //Verifica se a lista possui valores
-            if (listIdiomas != null) 
-            {
-                //Limpa o combo antes de preenche-lo
-                cboIdioma.Items.Clear();
-
-                //Determino o primeiro valor do combo
-                cboIdioma.Items.Add(new ListItem("Escolha um idioma...", "-1"));
-
-                //Realiza um laço pela lista
-                foreach (Idioma idioma in listIdiomas)
-                {
-                    //Preenche o combo
-                    cboIdioma.Items.Add(new ListItem(idioma.sIdioma, idioma.Id.ToString()));
-                }
-
-                //Adiciona a ultima opção
-                cboIdioma.Items.Add(new ListItem("Outro", "-2"));
-            }
-        }
-
-        /// <summary>
-        /// Preenche o combo com os dados vindos do banco de dados
-        /// </summary>
-        private void PreencheComboEditoras() 
-        {
-            EditoraBLL editoraBLL = null;
-            List<object> listEditora = null;
-
-            //Instancia um novo objeto
-            editoraBLL = new EditoraBLL();
-
-            /*Realiza o select das editoras. o -1 representa que nenhum id sera utilizado, portanto é um select geral;
-             Preenche o combo com a lista retornada
-             */
-            listEditora = editoraBLL.MakeSelect(-1);
-
-            //Limpa o combo
-            cboEditora.Items.Clear();
-
-            //Adiciona o primeiro item do combo
-            cboEditora.Items.Add(new ListItem("Selecione Uma Editora...", "-1"));
-
-            //Verifica se a lista retornou com valores
-            if (listEditora != null)
-            {
-                //Realiza um laço pelos dados
-                foreach (Editora editora in listEditora)
-                {
-                    //Preenche o combo com as editoras
-                    cboEditora.Items.Add(new ListItem(editora.sEditora, editora.IdEditora.ToString()));
-                }
-
-                //Adiciona o ultimo item da lista
-                cboEditora.Items.Add(new ListItem("Outro...", "0"));
-            }
-        }
-
-        /// <summary>
-        /// Preenche o combo de generos com os dados vindos do banco de dados
-        /// </summary>
-        private void PreencheComboGenero() 
-        {
-            GeneroBLL generoBLL = null;
-            List<object> listGenero = null;
-
-            //Cria um novo objeto
-            generoBLL = new GeneroBLL();
-
-            //Realiza o select de todos os generos
-            listGenero = generoBLL.MakeSelect(-1);
-
-            //Se a lista retornada for diferente de null
-            if(listGenero != null)
-            {
-                //Limpa o combo 
-                cboGenero.Items.Clear();
-
-                //Preenche o combo com o primeiro valor
-                cboGenero.Items.Add(new ListItem("Escolha um gênero...", "-1"));
-
-                //Faz um laço pela lista de genero
-                foreach (Genero genero in listGenero) 
-                {
-                    //Preenche o combo com os dados 
-                    cboGenero.Items.Add(new ListItem(genero.sGenero, genero.IdGenero.ToString()));
-                }
-
-                //Preenche o combo com o ultimo valor 
-                cboGenero.Items.Add(new ListItem("Outro...", "0"));
             }
         }
     }
