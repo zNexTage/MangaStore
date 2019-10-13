@@ -155,7 +155,7 @@ namespace MangaStore.DAO
                     livro.Editora = Convert.ToString(sqlReader["EDITORA"]);
                     livro.Genero = Convert.ToString(sqlReader["GENERO"]);
                     livro.Idioma = Convert.ToString(sqlReader["IDIOMA"]);
-                    livro.Preco = (float)(sqlReader["PRECO_LIVRO"]);
+                    livro.Preco = Convert.ToDecimal(sqlReader["PRECO_LIVRO"]);
                     livro.QtdPaginas = Convert.ToInt32(sqlReader["QTD_PAGINAS_LIVRO"]);
                     livro.DataPublicacao = Convert.ToDateTime(sqlReader["DATA_PUBLICACAO_LIVRO"]);
                     livro.QuantidadeLivros = Convert.ToInt32(sqlReader["QUANTIDADE_LIVRO"]);

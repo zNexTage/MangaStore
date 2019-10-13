@@ -21,26 +21,25 @@
                     </ul>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-1">
-                            <label class="fontPatrick" style="display: flex; font-size: 25px;">
-                                ISBN:
-                            </label>
-                        </div>
-                        <div class="col-lg-3">
-                            <input type="text" id="txtISBN" onfocusout="VerificarPorISBN();" class="form-control" />                           
-                        </div>
+                    <div class="col-lg-1 col-sm-12">
+                        <label class="fontPatrick" style="display: flex; font-size: 25px;">
+                            Titulo:
+                        </label>
+                    </div>
+                    <div class="col-lg-5">
+                        <input type="text" id="txtTitulo" onfocusout="FindBook();" class="form-control" />
                     </div>
                     <hr />
                     <div class="row">
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
-                                Titulo:
+                                ISBN:
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtTitulo" class="form-control" />
+                            <input type="text" id="txtISBN" class="form-control" />
                         </div>
+
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
                                 Autor:
@@ -57,7 +56,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtEditora" class="form-control" />                            
+                            <input type="text" id="txtEditora" class="form-control" />
                         </div>
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
@@ -65,7 +64,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtGenero" class="form-control" />                             
+                            <input type="text" id="txtGenero" class="form-control" />
                         </div>
                     </div>
                     <div class="row">
@@ -75,7 +74,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtIdioma" class="form-control" />                              
+                            <input type="text" id="txtIdioma" class="form-control" />
                         </div>
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
@@ -139,6 +138,26 @@
             <br />
         </div>
     </div>
+
+    <div class="modal fade" id="modalLivros" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Escolha o seu livro para preencher os campos automaticamente. Caso não encontre clique em Sair.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="modal-livro-body" style="height: 580px; overflow-y: scroll;" class="modal-body">
+                    <table id="tblLivros" class="table table-striped" style="width: 100%"></table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Sair</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript" src="Scripts/jquery-3.0.0.min.js"></script>
     <script type="text/javascript" src="Scripts/jquery-migrate.js"></script>
     <script type="text/javascript" src="Scripts/jquery-ui-1.12.1.min.js"></script>
@@ -151,47 +170,86 @@
             //$('#txtISBN').mask('000-00-000-0000-0');
         })
 
-        //Verifica a quantidade de caracteres digitados no campo de texto.
-        function VerificarPorISBN()
-        {
-            var txtISBN = $('#txtISBN').val();
-            
+        //Procura o livro pelo seu titulo
+        function FindBook() {
+            var txtTitulo = $('#txtTitulo').val();
 
-            //Verifica se o usuario digitou corretamente a quantidade de digitos da ISBN
-            if (true)
-            {
-                //var desired = txtISBN.replace(/[^\w\s]/gi, '')
+            $.ajax({
+                type: "GET",
+                url: "https://www.googleapis.com/books/v1/volumes?q=" + txtTitulo,
+                success: function (data) {
+                    var DataOption = data.items;
+                    var CreateData = [];
 
-                var jData =
-                {
-                    ISBN: txtISBN
-                }
-
-                $.ajax({
-                    type: "GET",
-                    url: "https://www.googleapis.com/books/v1/volumes?q=isbn:" + txtISBN,
-                    success: function (data)
-                    {
-                        console.log(data);
-                        <%--$('#txtISBN').val();
-                        $('#txtTitulo').val();
-                        $('#txtAutor').val();
-                        $("#txtEditora").val(data.Editora.IdEditora);
-                        $("#txtGenero").val(data.Genero.IdGenero);
-                        $("#txtIdioma").val(data.Idioma.IdIdioma);                        
-                        $('#txtQtdPagina').val(data.QtdPaginas);
-                        $('#<%=cboMes.ClientID%>').prop('selectedIndex', 0);
-                        $('#<%=cboAno.ClientID%>').prop('selectedIndex', 0);
-                        $('#imgCapa').attr('class', "rounded float-left img-thumbnail");
-                        $('#imgCapa').attr('style', "cursor:pointer;min-width:182.96px;min-height:206.42px;max-width:182.96px;max-height:206.42px;object-fit: cover;margin-bottom:10px;");
-                        $("#imgCapa").attr("src","data:image/png;base64, "+ data.CapaLivro);--%>
-                    },
-                    error: function ()
-                    {
-                        alert('erro');
+                    if ($.fn.DataTable.isDataTable('#tblLivros')) {
+                        $('#tblLivros').DataTable().clear().destroy();
                     }
-                })
-            }
+
+                    $.each(DataOption, function (key, value) {
+                        var Titulo = '';
+                        var SubTitulo = '';
+                        var Autores = '';
+                        var Isbn = '';
+                        var Editora = '';
+                        var auxIsbn = '';
+                        var aux = [];
+                        var Genero = '';
+                        var Idioma = '';
+                        var NumeroPaginas = '';
+                        var DataPublicacao = '';
+                        var Capa = '';
+
+                        try { Titulo = value.volumeInfo.title; } catch { Titulo = '';}
+                        try { SubTitulo = value.volumeInfo.subtitle; } catch { SubTitulo = ''; }
+                        try { Autores = value.volumeInfo.authors; } catch { Autores = ''; }
+                        try {
+                            Isbn = value.volumeInfo.industryIdentifiers;
+
+                            auxIsbn = Isbn[key].identifier;
+                        }
+                        catch
+                        {
+                            auxIsbn = '';
+                        }
+                        try { Editora = value.volumeInfo.publisher; } catch { Editora = ''; }
+                        try {Idioma = value.volumeInfo.language; }catch{Idioma = '';}
+                        try { NumeroPaginas = value.volumeInfo.pageCount; } catch {NumeroPaginas = ''; }
+                        try { DataPublicacao = value.volumeInfo.publishedDate; } catch { DataPublicacao = ''; }
+                        
+                        aux = ["" + Titulo + "", "" + SubTitulo+"","" + auxIsbn + "", "" + Autores + "", "" + Editora + "", "" + Genero + "", "" + Idioma + "", "" + NumeroPaginas + "", "" + DataPublicacao + "", "" + Capa + ""];
+
+                        CreateData.push(aux);
+                    });
+                    console.log(DataOption);
+                    console.log(CreateData);
+
+                    //var i = 0;
+                    //var html = ' <div class="row"> ';
+                    //while (i <= 20) {
+                    //    html += ' <div class="col-lg-6" style="padding:15px;"> ';
+                    //    html += ' <div class="card" style="width: 18rem;margin:auto;"> ';
+                    //    html += ' <img src="C:\Users\Christian\Pictures\311894.jpg" class="card-img-top" alt="..."> ';
+                    //    html += ' <div class="card-body"> ';
+                    //    html += ' <h5 class="card-title">Card title</h5> ';
+                    //    html += '   </div> ';
+                    //    html += '   </div> ';
+                    //    html += '   </div> ';
+                    //    i++;
+                    //}
+
+                    //html += ' </div> ';
+
+
+                    //$('#modal-livro-body').prepend(html);
+
+
+                    $('#modalLivros').modal('show');
+                },
+                error: function () {
+                    alert('erro');
+                }
+            })
+
         }
 
         //Adiciona a imagem upada no componente Image.
@@ -254,8 +312,6 @@
             var imgCapa = $("#imgCapa").attr("src");
             var txtQuantidade = $('#txtQuantidade').val();
             var txtDescricao = $('#txtDescrição').val();
-
-            alert(txtPreco);
 
             //Verifica se o source do componente image é o padrão
             if (imgCapa == "Imagem/Icon/iconAdd.jpg") {
