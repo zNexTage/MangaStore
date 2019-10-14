@@ -6,11 +6,11 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
+    <link href="DataTables/datatables.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="Content/bootstrap.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Patrick+Hand&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="Content/CSS/Geral.css" />
-    <link href="Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
-    <link href="DataTables/datatables.min.css" rel="stylesheet" />
+    <link href="Content/themes/base/jquery-ui.min.css" rel="stylesheet" />    
 </head>
 <body>
     <header>

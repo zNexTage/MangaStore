@@ -157,7 +157,13 @@
             </div>
         </div>
     </div>
-
+    <style>
+        @media (min-width: 1200px) {
+            .modal-xl {
+                max-width: 1400px !important;
+            }
+        }
+    </style>
     <script type="text/javascript" src="Scripts/jquery-3.0.0.min.js"></script>
     <script type="text/javascript" src="Scripts/jquery-migrate.js"></script>
     <script type="text/javascript" src="Scripts/jquery-ui-1.12.1.min.js"></script>
@@ -181,45 +187,120 @@
                     var DataOption = data.items;
                     var CreateData = [];
 
-                    if ($.fn.DataTable.isDataTable('#tblLivros')) {
-                        $('#tblLivros').DataTable().clear().destroy();
-                    }
-
                     $.each(DataOption, function (key, value) {
-                        var Titulo = '';
-                        var SubTitulo = '';
-                        var Autores = '';
-                        var Isbn = '';
-                        var Editora = '';
-                        var auxIsbn = '';
+                        var Titulo = '-';
+                        //var Descrição = '-';
+                        var Autores = '-';
+                        var Isbn = '-';
+                        var Editora = '-';
+                        var auxIsbn = '-';
                         var aux = [];
-                        var Genero = '';
-                        var Idioma = '';
-                        var NumeroPaginas = '';
-                        var DataPublicacao = '';
+                        var Genero = '-';
+                        var Idioma = '-';
+                        var NumeroPaginas = '-';
+                        var DataPublicacao = '-';
                         var Capa = '';
 
-                        try { Titulo = value.volumeInfo.title; } catch { Titulo = '';}
-                        try { SubTitulo = value.volumeInfo.subtitle; } catch { SubTitulo = ''; }
-                        try { Autores = value.volumeInfo.authors; } catch { Autores = ''; }
                         try {
-                            Isbn = value.volumeInfo.industryIdentifiers;
+                            if (typeof (value.volumeInfo.title) != "undefined") { Titulo = value.volumeInfo.title; }
+                        } catch { Titulo = '-'; }
+                        //try {
+                        //    if (typeof (value.volumeInfo.description) != "undefined") { Descrição = value.volumeInfo.description; }
+                        //} catch { Descrição = '-'; }
+                        try {
+                            if (typeof (value.volumeInfo.authors) != "undefined") { Autores = value.volumeInfo.authors; }
+                        } catch { Autores = '-'; }
+                        try {
+                            if (typeof (value.volumeInfo.industryIdentifiers) != "undefined") {
+                                Isbn = value.volumeInfo.industryIdentifiers;
 
-                            auxIsbn = Isbn[key].identifier;
+                                auxIsbn = Isbn[key].identifier;
+                            }
                         }
                         catch
                         {
-                            auxIsbn = '';
+                            auxIsbn = '-';
                         }
-                        try { Editora = value.volumeInfo.publisher; } catch { Editora = ''; }
-                        try {Idioma = value.volumeInfo.language; }catch{Idioma = '';}
-                        try { NumeroPaginas = value.volumeInfo.pageCount; } catch {NumeroPaginas = ''; }
-                        try { DataPublicacao = value.volumeInfo.publishedDate; } catch { DataPublicacao = ''; }
-                        
-                        aux = ["" + Titulo + "", "" + SubTitulo+"","" + auxIsbn + "", "" + Autores + "", "" + Editora + "", "" + Genero + "", "" + Idioma + "", "" + NumeroPaginas + "", "" + DataPublicacao + "", "" + Capa + ""];
+                        try {
+                            if (typeof (value.volumeInfo.publisher) != "undefined") {
+                                Editora = value.volumeInfo.publisher;
+                            }
+                        } catch { Editora = '-'; }
+                        try { if (typeof (value.volumeInfo.categories) != "undefined") Genero = value.volumeInfo.categories; }
+                        catch{
+                            Genero = '';
+                        }
+                        try {
+                            if (typeof (value.volumeInfo.language) != "undefined") {
+                                Idioma = value.volumeInfo.language;
+                            }
+                        }
+                        catch{ Idioma = '-'; }
+                        try {
+                            if (typeof (value.volumeInfo.pageCount) != "undefined") {
+                                NumeroPaginas = value.volumeInfo.pageCount;
+                            }
+                        } catch { NumeroPaginas = '-'; }
+                        try {
+                            if (typeof (value.volumeInfo.publishedDate) != "undefined") {
+                                DataPublicacao = value.volumeInfo.publishedDate;
+                            }
+                        } catch { DataPublicacao = '-'; }
+                        try {
+                            if (typeof (value.volumeInfo.imageLinks.thumbnail) != "undefined") {
+                                Capa = "<img src='" + value.volumeInfo.imageLinks.thumbnail + "'/ >";
+                            }
+                        } catch{ Capa = '-'; }
+
+                        aux = ["" + Capa + "", "" + Titulo + "", "" + auxIsbn + "", "" + Autores + "", "" + Editora + "", "" + Genero + "", "" + Idioma.toUpperCase() + "", "" + NumeroPaginas + "", "" + DataPublicacao + ""];
 
                         CreateData.push(aux);
                     });
+
+                    $(document).ready(function () {
+                        if ($.fn.DataTable.isDataTable('#tblLivros')) {
+                            $('#tblLivros').DataTable().clear().destroy();
+                        }
+
+                        $('#tblLivros').DataTable({
+                            "language": {
+                                "sEmptyTable": "Nenhum registro encontrado",
+                                "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                                "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                                "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                                "sInfoPostFix": "",
+                                "sInfoThousands": ".",
+                                "sLengthMenu": "_MENU_ Resultados por página",
+                                "sLoadingRecords": "Carregando...",
+                                "sProcessing": "Processando...",
+                                "sZeroRecords": "Nenhum registro encontrado",
+                                "sSearch": "Pesquisar",
+                                "oPaginate": {
+                                    "sNext": "Próximo",
+                                    "sPrevious": "Anterior",
+                                    "sFirst": "Primeiro",
+                                    "sLast": "Último"
+                                }
+
+                            },
+                            data: CreateData,
+                            columns: [
+                                { title: "Capa" },
+                                { title: "Titulo" },
+                                { title: "ISBN" },
+                                { title: "Autores" },
+                                { title: "Editora" },
+                                { title: "Gênero" },
+                                { title: "Idioma" },
+                                { title: "Número de páginas" },
+                                { title: "Data de publicação" }
+                            ],
+                            autoWidth: true
+                        });
+                    });
+
+
+
                     console.log(DataOption);
                     console.log(CreateData);
 
