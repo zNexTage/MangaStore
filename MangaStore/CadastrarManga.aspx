@@ -122,7 +122,7 @@
                             <input type="file" id="uplCapa" style="opacity: 0; width: 0; height: 0px;" onchange="loadImageFileAsURL();" />
                         </div>
                         <div class="col-lg-9 col-sm-6">
-                            <textarea id="txtDescrição" placeholder="Resumo" class="form-control" style="height: 253.41px;"></textarea>
+                            <textarea id="txtDescrição" placeholder="Descrição" class="form-control" style="height: 253.41px;"></textarea>
                         </div>
                     </div>
                     <hr />
