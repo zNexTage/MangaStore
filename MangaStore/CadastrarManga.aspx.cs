@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using MangaStore.BLL;
@@ -104,6 +107,12 @@ namespace MangaStore
                 //Decrementa o ano para poder ficar de forma decrescente
                 iAnoAtual--;
             }
+        }
+
+        [WebMethod]
+        public static string ConverteImageToBase64(object strImagem) 
+        {            
+            return "";
         }
     }
 }
