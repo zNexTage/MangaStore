@@ -172,89 +172,67 @@
     <script type="text/javascript" src="Scripts/jquery-migrate.js"></script>
     <script type="text/javascript" src="Scripts/jquery-ui-1.12.1.min.js"></script>
     <script type="text/javascript" src="Scripts/jQueryMask/dist/jquery.mask.min.js"></script>
-
+    <script type="text/javascript" src="Scripts/JS/CadastrarManga.js"></script>
     <script>
-
-        $(document).ready(function ($) {
-            $('#txtPreco').mask('000.000.000.000.000,00', { reverse: true });
-            //$('#txtISBN').mask('000-00-000-0000-0');
-        })
-
-
-        function convertImgToBase64URL(url) {
-            var teste = url.split(':');
-            teste[0] += "s:";
-            var httpsUrl = teste[0] + teste[1];
-            console.log(httpsUrl);
-
-            var x = new XMLHttpRequest();
-            x.open('GET', 'https://cors-anywhere.herokuapp.com/' + httpsUrl);
-            // I put "XMLHttpRequest" here, but you can use anything you want.
-            x.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            x.responseType = 'blob';
-            x.onload = function () {
-                console.log(x.response);
-                //var urlCreator = window.URL || window.webkitURL;
-                //var imageUrl = urlCreator.createObjectURL(x.response);
-
-                var reader = new FileReader();
-                reader.readAsDataURL(x.response);
-                reader.onloadend = function () {
-                    $('#imgCapa').attr("src", reader.result);
-                }
-                $('#imgCapa').attr('class', "rounded float-left img-thumbnail");
-                $('#imgCapa').attr('style', "cursor:pointer;min-width:182.96px;min-height:206.42px;max-width:182.96px;max-height:206.42px;object-fit: cover;margin-bottom:10px;");
-                $('#btnRemoverImagem').css({ "display": "block" });
-                $('#imgCapa').removeAttr("onclick");
-            };
-            x.send();
-        }
-
         //Procura o livro pelo seu titulo
         function FindBook() {
+            //Recebe o valor do campo de texto
             var txtTitulo = $('#txtTitulo').val().trim();
 
+            //Verifica se o usuario digitou algum valor
             if (txtTitulo.length > 0) {
-
+                //Verifica se o datatable ja foi criado
                 if ($.fn.DataTable.isDataTable('#tblLivros')) {
+                    //Se sim, eu 'destruo'
                     $('#tblLivros').DataTable().destroy();
                 }
 
-                $('#tblLivros thead').empty();
-                $('#tblLivros tbody').empty();
-
-
+                //Realiza a requisição da API da google de livros
                 $.ajax({
                     type: "GET",
-                    url: "https://www.googleapis.com/books/v1/volumes?q=" + txtTitulo,
+                    url: "https://www.googleapis.com/books/v1/volumes?q=" + txtTitulo,                    
                     success: function (data) {
+                        //Verifica se retornou algum dado da requisição
                         if (data.totalItems > 0) {
+                            //Recebe todos os items retornados da requisição
                             var DataOption = data.items;
                             var CreateData = [];
 
+                            //Faz um laço pelos dados retorandos, para separar valores como ISBN, Editora, Autores etc...
                             $.each(DataOption, function (key, value) {
-                                var Titulo = '-';
-                                //var Descrição = '-';
-                                var Autores = '-';
-                                var Isbn = '-';
-                                var Editora = '-';
-                                var auxIsbn = '-';
+                                var Titulo = '';
+                                var Autores = '';
+                                var Isbn = '';
+                                var Editora = '';
+                                var auxIsbn = '';
                                 var aux = [];
-                                var Genero = '-';
-                                var Idioma = '-';
-                                var NumeroPaginas = '-';
-                                var DataPublicacao = '-';
+                                var Genero = '';
+                                var Idioma = '';
+                                var NumeroPaginas = '';
+                                var DataPublicacao = '';
                                 var Capa = '';
 
-                                try {
-                                    if (typeof (value.volumeInfo.title) != "undefined") { Titulo = value.volumeInfo.title; }
-                                } catch { Titulo = '-'; }
-                                //try {
-                                //    if (typeof (value.volumeInfo.description) != "undefined") { Descrição = value.volumeInfo.description; }
-                                //} catch { Descrição = '-'; }
+                               //Verificação do valores retornados do JSON. 
+                                /*
+                                 Coloquei um try catch para cada validação, pois pode ocorrer de alguns campos não existir. 
+                                 ISBN é um exemplo disso, já que ocorreu de não ter essa propriedade no JSON
+                                 */
+                                try
+                                {
+                                    if (typeof (value.volumeInfo.title) != "undefined")
+                                    { Titulo = value.volumeInfo.title; }
+                                }
+                                catch
+                                {
+                                    Titulo = ""
+                                }
                                 try {
                                     if (typeof (value.volumeInfo.authors) != "undefined") { Autores = value.volumeInfo.authors; }
-                                } catch { Autores = '-'; }
+                                }
+                                catch
+                                {
+                                    Autores = '';
+                                }
                                 try {
                                     if (typeof (value.volumeInfo.industryIdentifiers) != "undefined") {
                                         Isbn = value.volumeInfo.industryIdentifiers;
@@ -264,14 +242,20 @@
                                 }
                                 catch
                                 {
-                                    auxIsbn = '-';
+                                    auxIsbn = '';
                                 }
                                 try {
                                     if (typeof (value.volumeInfo.publisher) != "undefined") {
                                         Editora = value.volumeInfo.publisher;
                                     }
-                                } catch { Editora = '-'; }
-                                try { if (typeof (value.volumeInfo.categories) != "undefined") Genero = value.volumeInfo.categories; }
+                                }
+                                catch
+                                {
+                                    Editora = '';
+                                }
+                                try {
+                                    if (typeof (value.volumeInfo.categories) != "undefined") { Genero = value.volumeInfo.categories; } 
+                                }
                                 catch{
                                     Genero = '';
                                 }
@@ -280,31 +264,50 @@
                                         Idioma = value.volumeInfo.language;
                                     }
                                 }
-                                catch{ Idioma = '-'; }
+                                catch
+                                {
+                                    Idioma = '';
+                                }
                                 try {
                                     if (typeof (value.volumeInfo.pageCount) != "undefined") {
                                         NumeroPaginas = value.volumeInfo.pageCount;
                                     }
-                                } catch { NumeroPaginas = '-'; }
+                                }
+                                catch
+                                {
+                                    NumeroPaginas = '';
+                                }
                                 try {
                                     if (typeof (value.volumeInfo.publishedDate) != "undefined") {
                                         DataPublicacao = value.volumeInfo.publishedDate;
                                     }
-                                } catch { DataPublicacao = '-'; }
+                                }
+                                catch
+                                {
+                                    DataPublicacao = '';
+                                }
                                 try {
                                     if (typeof (value.volumeInfo.imageLinks.thumbnail) != "undefined") {
                                         Capa = "<img  id='" + key + "' src='" + value.volumeInfo.imageLinks.thumbnail + "'/ >";
                                     }
-                                } catch{ Capa = '-'; }
+                                }
+                                catch
+                                {
+                                    Capa = "";
+                                }
 
+                                //Monta os dados para preecher o datatable
                                 aux = ["" + key + "", "" + Capa + "", "" + Titulo + "", "" + auxIsbn + "", "" + Autores + "", "" + Editora + "", "" + Genero + "", "" + Idioma.toUpperCase() + "", "" + NumeroPaginas + "", "" + DataPublicacao + ""];
 
+                                //Passa os valore do array auxiliar para o que sera usado para preencher o datatable
                                 CreateData.push(aux);
                             });
 
+                            
                             $(document).ready(function () {
-
+                                //Cria o datatable
                                 var table = $('#tblLivros').DataTable({
+                                    //Muda a lingua do datatable para PT BR
                                     "language": {
                                         "sEmptyTable": "Nenhum registro encontrado",
                                         "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -324,7 +327,9 @@
                                             "sLast": "Último"
                                         }
                                     },
+                                    //Atribui os dados no datatable
                                     data: CreateData,
+                                    //Adiciona titulos nas tabelas
                                     columns: [
                                         { title: "Key", visible: false },
                                         { title: "Capa" },
@@ -337,17 +342,17 @@
                                         { title: "Número de páginas" },
                                         { title: "Data de publicação" }
                                     ],
+                                    //Define o ajuste do tamanho como automatico
                                     autoWidth: true
                                 });
 
+                                //Demonstra o modal com os livros
                                 $('#modalLivros').modal('show');
 
                                 //Evento de click na linha do datatable
-                                $('#tblLivros tbody').on('click', 'tr', function () {
-
+                                $('#tblLivros tbody tr').on('click', function () {
+                                    //Recebe os dados da linha que foi clicado
                                     var data = table.row(this).data();
-
-                                    console.log(data);
 
                                     var Index;
                                     var image;
@@ -360,12 +365,15 @@
                                     var Idioma;
                                     var NumPaginas;
                                     var DtPublicacao;
+                                    var auxData;
+
+                                    console.log(data);
 
                                     //Adquiri a posição da linha que foi clicada
                                     Index = data[0];
 
                                     //Adquiri a imagem pelo ID
-                                    image = document.getElementById(Index);
+                                    image = document.getElementById(Index);   
 
                                     //Recebe os valores da linha clicada no datatable
                                     Title = data[2];
@@ -377,73 +385,62 @@
                                     NumPaginas = data[8];
                                     DtPublicacao = data[9];
 
+                                    //Atribui os valores nos campos
                                     $('#txtTitulo').val(Title);
                                     $('#txtISBN').val(Isbn);
                                     $('#txtAutor').val(Autores);
+                                    $('#txtEditora').val(Editora);
+                                    $('#txtGenero').val(Genero);
                                     $('#txtIdioma').val(Idioma);
                                     $('#txtQtdPagina').val(NumPaginas);
 
-                                   convertImgToBase64URL(image.src);
+                                    //Splita a data no vetor de ano, mes e data
+                                    auxData = DtPublicacao.split('-');
 
+                                    $('#<%=cboAno.ClientID%>').val('-1');
+                                    $('#<%=cboMes.ClientID%>').val('-1');
+
+                                    //Verifica se o vetor possui Ano e mes
+                                    if (auxData.length == 3) {
+                                        //Altera os valores do combo para os da data de publicação do livro
+                                        $('#<%=cboAno.ClientID%>').val(auxData[0]);
+                                        $('#<%=cboMes.ClientID%>').val(auxData[1]);
+                                    }
+                                    //Se não tiver ano e mes
+                                    else {
+                                        //Altera somente o ano
+                                        $('#<%=cboAno.ClientID%>').val(auxData[0]);
+                                    }
+
+                                    //Verifica se o livro possui uma imagem de sua capa
+                                    if (image != null) {
+                                        //Converte a imagem para base64 e atribui no elemento IMG
+                                        convertImgToBase64URL(image.src);
+                                    }
+                                    //Se não tiver...
+                                    else {
+                                        //Eu reseto o componente IMG para padrão.
+                                        //Faço isso pois se o usuario ja tiver pesquisado antes, a imagem ficará salva no componente
+                                        removerImagem();
+                                    }
+
+                                    //Fecha o modal
                                     $('#modalLivros').modal('hide');
 
+                                    //Limpa o datatable
                                     $('#tblLivros').DataTable().clear().destroy();
                                 });
                             });
                         }
                     },
-                    error: function () {
-                        alert('erro');
+                    error: function (err) {
+                        //Demonstra uma mensagem de erro
+                        modalMessage("Atenção!!", "Ocorreu um erro!! Tente mais tarde");
                     }
                 })
             }
         }
 
-        //Adiciona a imagem upada no componente Image.
-        function loadImageFileAsURL() {
-            var filesSelected = document.getElementById("uplCapa").files;
-            var fileName = filesSelected[0].name;
-            $('#fileName').text('Filename: ' + fileName);
-            if (filesSelected.length > 0) {
-                var fileToLoad = filesSelected[0];
-
-
-                var fileReader = new FileReader();
-
-                fileReader.onload = function (fileLoadedEvent) {
-                    var textAreaFileContents = document.getElementById
-                        (
-                            "textAreaFileContents"
-                        );
-
-                    $('#imgCapa').attr('src', fileLoadedEvent.target.result);
-                    $('#imgCapa').attr('class', "rounded float-left img-thumbnail");
-                    $('#imgCapa').attr('style', "cursor:pointer;min-width:182.96px;min-height:206.42px;max-width:182.96px;max-height:206.42px;object-fit: cover;margin-bottom:10px;");
-                    $('#btnRemoverImagem').css({ "display": "block" });
-                    $('#imgCapa').removeAttr("onclick");
-                    $('#uplCapa').val('');
-                };
-
-                fileReader.readAsDataURL(fileToLoad);
-            }
-        }
-
-        //Abre o uploader
-        function abrirUpload() {
-            document.getElementById("uplCapa").click();
-        }
-
-        //Remove a imagem atual e coloca a padrão no lugar
-        function removerImagem() {
-            $('#imgCapa').attr('src', "Imagem/Icon/iconAdd.jpg");
-            $('#imgCapa').attr('class', "rounded float-left");
-            $('#imgCapa').attr('onclick', "abrirUpload();");
-            $('#imgCapa').removeAttr('style');
-            $('#imgCapa').css({ 'width': '40px', 'cursor': 'pointer' });
-            $("#btnRemoverImagem").css({ "display": "none" });
-        }
-    </script>
-    <script>
         //Manda as informações para o serviço e cadastra o livro
         function cadastrarLivro() {
             //Recupera os valores
@@ -489,7 +486,7 @@
                 txtDtPublicacao += " 00:00:00";
             }
 
-            //Cria um objeto para poder mandar para o servidor
+            //Cria um objeto para poder mandar para o servidor e Atribui os valores a propriedades do atributo
             var jData =
             {
                 Isbn: txtISBN,
@@ -506,6 +503,7 @@
                 Descricao: txtDescricao
             }
 
+            //Realiza a chamada e envio de dados ao servidor
             $.ajax({
                 type: "POST",
                 url: "Comunicacao/cadastranovolivro.ashx",
