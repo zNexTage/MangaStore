@@ -80,6 +80,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\CSS\Geral.css" />
+    <Content Include="Content\CSS\LivrosDisponiveis.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -297,6 +298,7 @@
     <Content Include="DataTables\Select-1.3.1\js\select.semanticui.min.js" />
     <Content Include="Imagem\Icon\iconAdd.jpg" />
     <Content Include="Imagem\Image1.jpg" />
+    <Content Include="LivrosDisponiveis.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -340,11 +342,11 @@
     <Content Include="Scripts\jQueryMask\package.json" />
     <Content Include="Scripts\jQueryMask\README.md" />
     <Content Include="Comunicacao\cadastranovolivro.ashx" />
-    <Content Include="Comunicacao\verificarporisbn.ashx" />
     <Content Include="DataTables\Bootstrap-4-4.1.1\css\bootstrap.css.map" />
     <Content Include="DataTables\Bootstrap-4-4.1.1\css\bootstrap.min.css.map" />
     <Content Include="DataTables\Buttons-1.6.0\css\common.scss" />
     <Content Include="DataTables\Buttons-1.6.0\css\mixins.scss" />
+    <Content Include="Comunicacao\RetornaCapaLivro.ashx" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
     <Content Include="Scripts\jQueryMask\dist\jquery.mask.js" />
     <Content Include="Scripts\jQueryMask\dist\jquery.mask.min.js" />
@@ -404,12 +406,19 @@
     <Compile Include="Comunicacao\cadastranovolivro.ashx.cs">
       <DependentUpon>cadastranovolivro.ashx</DependentUpon>
     </Compile>
-    <Compile Include="Comunicacao\verificarporisbn.ashx.cs">
-      <DependentUpon>verificarporisbn.ashx</DependentUpon>
+    <Compile Include="Comunicacao\RetornaCapaLivro.ashx.cs">
+      <DependentUpon>RetornaCapaLivro.ashx</DependentUpon>
     </Compile>
     <Compile Include="DAO\DataBaseHelper.cs" />
     <Compile Include="DAO\IDataAccessObject.cs" />
     <Compile Include="DAO\LivroDAO.cs" />
+    <Compile Include="LivrosDisponiveis.aspx.cs">
+      <DependentUpon>LivrosDisponiveis.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LivrosDisponiveis.aspx.designer.cs">
+      <DependentUpon>LivrosDisponiveis.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MasterPage.Master.cs">
       <DependentUpon>MasterPage.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

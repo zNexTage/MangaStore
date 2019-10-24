@@ -38,3 +38,32 @@
         z-index: -2;
         opacity: 1.4;
     }
+
+
+.bgLivrosDisponiveis {
+    margin: 0;
+    padding: 0;
+    background-color: rgba(77, 31, 3, 0.4);
+    float: left;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    height: 500px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+}
+
+    .bgLivrosDisponiveis::before {
+        background-image: url(../../Imagem/Image3.jpg);
+        background-size: cover;
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2;
+        opacity: 1.4;
+    }

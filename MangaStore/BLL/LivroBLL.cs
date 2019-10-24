@@ -26,29 +26,44 @@ namespace MangaStore.BLL
             LivroDAO.Insert(obj);
         }
 
-        public List<object> MakeSelect(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
-        /// Retorna um livro pela sua ISBN
+        /// Realiza um select dos livros, o parametro object serve para adicionar filtros para a query.
         /// </summary>
-        /// <param name="ISBN"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        public object MakeSelect(string ISBN, DataBaseHelper.OrderBy orderBy)
+        public List<object> MakeSelect(object obj)
         {
-            Livro Livro = null;
+            List<object> listLivro = null;
             LivroDAO livroDAO = null;
+            Livro livro = null;
+
+            //Realiza o cast dos valores a serem usados na query (filtro)
+            livro = (Livro)obj;
 
             //Inicializa a dao de livros
             livroDAO = new LivroDAO();
 
             //Realiza o select e devolve os dados do livro
-            Livro = (Livro)livroDAO.Select(ISBN, orderBy);
+            listLivro = livroDAO.Select(livro.CdLivro, DataBaseHelper.SelectType.All, DataBaseHelper.OrderBy.ASC);
 
             //Retorna o livro
-            return Livro;
+            return listLivro;
+        }
+
+        /// <summary>
+        /// Realiza a chamada do metodo da dao de livros para retornar a capa de um livro pelo seu codigo (id)
+        /// </summary>
+        /// <param name="lCdLivro"></param>
+        /// <returns></returns>
+        public byte[] RetornaCapaLivro(long lCdLivro) 
+        {
+            LivroDAO livroDAO = null;
+
+            //Instancia um novo DAO
+            livroDAO = new LivroDAO();
+
+            //Retorna a capa do livro pelo seu id
+            return livroDAO.RetornaCapaLivro(lCdLivro);
         }
 
         /// <summary>
@@ -144,7 +159,7 @@ namespace MangaStore.BLL
             }
 
             //Verifica se a propriedade QtdPaginas está vazia
-            if (string.IsNullOrEmpty(livro.QuantidadeLivros.ToString().Trim()))
+            if (string.IsNullOrEmpty(livro.Quantidade.ToString().Trim()))
             {
                 //Verifica se a propriedade QtdPaginas está vazia
                 return Apoio.RetornaMensagemCampoObrigatorio("Quantidade Livros");

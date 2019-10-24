@@ -499,7 +499,7 @@
                 QtdPaginas: txtQtdPaginas,
                 DataPublicacao: txtDtPublicacao,
                 BaseImage: imgCapa,
-                QuantidadeLivros: txtQuantidade,
+                Quantidade: txtQuantidade,
                 Descricao: txtDescricao
             }
 

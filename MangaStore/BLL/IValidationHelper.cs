@@ -25,6 +25,6 @@ namespace MangaStore.BLL
         /// Realiza a chamada de um metodo da dal para fazer o select
         /// </summary>
         /// <param name="id"></param>
-        List<object> MakeSelect(int id);
+        List<object> MakeSelect(object obj);
     }
 }

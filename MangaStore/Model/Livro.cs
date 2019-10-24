@@ -20,10 +20,11 @@ namespace MangaStore.Model
         public DateTime DataPublicacao { get; set; }
         private string baseImage;
         public byte[] CapaLivro { get; set; }
-        public int? QuantidadeLivros { get; set; }
+        public int? Quantidade { get; set; }
         public string Descricao { get; set; }
         public string BaseImage { get => baseImage; set => SetValueImage(value); }
         public long? FkUsuario { get; set; }
+        public short Status { get; set; }
 
         /// <summary>
         /// Valida se foi recebido o base64 para assim converter em array de bytes.
@@ -44,6 +45,14 @@ namespace MangaStore.Model
             {
                 this.CapaLivro = new byte[0];
             }
-        }
+        }        
+    }
+
+    /// <summary>
+    /// Simboliza os status do livro
+    /// </summary>
+    public enum StatusLivro 
+    {
+        Disponivel = 0,
     }
 }
