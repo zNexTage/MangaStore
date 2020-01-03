@@ -16,6 +16,7 @@ namespace MangaStore.Model
         public string Genero { get; set; }
         public string Idioma { get; set; }
         public decimal? Preco { get; set; }
+        public string PrecoConvertido { get; set; }
         public int? QtdPaginas { get; set; }
         public DateTime DataPublicacao { get; set; }
         private string baseImage;
@@ -25,6 +26,7 @@ namespace MangaStore.Model
         public string BaseImage { get => baseImage; set => SetValueImage(value); }
         public long? FkUsuario { get; set; }
         public short Status { get; set; }
+        public int iPaginacaoLivro { get; set; }
 
         /// <summary>
         /// Valida se foi recebido o base64 para assim converter em array de bytes.

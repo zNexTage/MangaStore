@@ -32,3 +32,22 @@
         background: #4CAF50;
         cursor: pointer;
     }
+
+.descriptionTruncate {
+    white-space: normal;
+    word-break: break-all;
+    max-height: 192px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media(max-width: 67.5em){
+    .titlePages{
+        font-size:4.7em;
+    }
+}
+
+.media {
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius:5px;
+}

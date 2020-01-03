@@ -431,6 +431,7 @@
     <Compile Include="Util\Apoio.cs" />
     <Compile Include="Util\Messages.cs" />
     <Compile Include="Util\Parameters.cs" />
+    <Compile Include="Util\Sessao.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="MasterPage.Master" />

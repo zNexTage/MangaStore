@@ -495,7 +495,7 @@
                 Editora: txtEditora,
                 Genero: txtGenero,
                 Idioma: txtIdioma,
-                Preco: txtPreco,
+                PrecoConvertido: txtPreco,
                 QtdPaginas: txtQtdPaginas,
                 DataPublicacao: txtDtPublicacao,
                 BaseImage: imgCapa,

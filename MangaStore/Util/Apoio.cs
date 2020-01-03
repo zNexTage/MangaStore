@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.UI;
 using Newtonsoft.Json;
 
 namespace MangaStore.Util
@@ -75,6 +76,16 @@ namespace MangaStore.Util
 
             //Retorna o JSON
             return Json;
+        }
+
+        /// <summary>
+        /// Demonstra um modal com uma mensagem definida pelo parametro sMensagem
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="type"></param>
+        public static void DialogMessage(Control control, Type type, string sCabecalho,string sMensagem) 
+        {
+            ScriptManager.RegisterStartupScript(control, type, "", string.Format("modalMessage(`{0}`, `{1}`)", sCabecalho, sMensagem), true);
         }
     }
 }

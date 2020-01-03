@@ -52,7 +52,7 @@ namespace MangaStore.DAO
             Parameters pEditora = new Parameters("@Editora", livro.Editora, SqlDbType.VarChar);
             Parameters pGenero = new Parameters("@Genero", livro.Genero, SqlDbType.VarChar);
             Parameters pIdioma = new Parameters("@Idioma", livro.Idioma, SqlDbType.VarChar);
-            Parameters pPreco = new Parameters("@Preco", livro.Preco, SqlDbType.Decimal);
+            Parameters pPreco = new Parameters("@Preco", livro.PrecoConvertido, SqlDbType.Decimal);
             Parameters pQuantidadePaginas = new Parameters("@QtdPaginas", livro.QtdPaginas, SqlDbType.Int);
             Parameters pDataPublicacao = new Parameters("@DataPublicacao", livro.DataPublicacao, SqlDbType.DateTime);
             Parameters pCapaLivro = new Parameters("@CapaLivro", livro.CapaLivro, SqlDbType.VarBinary);
@@ -87,6 +87,8 @@ namespace MangaStore.DAO
             StringBuilder sbCommand = null;
             DataBaseHelper dbHelper = null;
             List<object> listLivros = null;
+            int iContador = 0;
+            int iPagina = 1;
 
             //Cria um novo StringBuilder
             sbCommand = new StringBuilder();
@@ -133,6 +135,12 @@ namespace MangaStore.DAO
                 //Realiza um laço para recuperar as informações retornadas do banco
                 while (sqlReader.Read())
                 {
+                    if (iContador == 12)
+                    {
+                        iContador = 0;
+                        iPagina = iPagina + 1;
+                    }
+
                     //Cria um novo livro
                     livro = new Livro();
 
@@ -145,14 +153,18 @@ namespace MangaStore.DAO
                     livro.Genero = Convert.ToString(sqlReader["GENERO_LIVRO"]);
                     livro.Idioma = Convert.ToString(sqlReader["IDIOMA_LIVRO"]);
                     livro.Preco = Convert.ToDecimal(sqlReader["PRECO_LIVRO"]);
+                    livro.PrecoConvertido = string.Format("{0:C}", livro.Preco);
                     livro.QtdPaginas = Convert.ToInt32(sqlReader["QTD_PAGINAS_LIVRO"]);
                     livro.DataPublicacao = Convert.ToDateTime(sqlReader["DATA_PUBLICACAO_LIVRO"]);
                     livro.Quantidade = Convert.ToInt32(sqlReader["QUANTIDADE_LIVRO"]);
                     livro.Descricao = Convert.ToString(sqlReader["DESCRICAO_LIVRO"]);
                     livro.Status = Convert.ToInt16(sqlReader["STATUS_LIVRO"]);
+                    livro.iPaginacaoLivro = iPagina;
 
                     //Adiciona o livro na lista
                     listLivros.Add(livro);
+
+                    iContador++;
                 }
             }
 
@@ -319,6 +331,142 @@ namespace MangaStore.DAO
         public void Update(int cod, object obj)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Seleciona todos os livros em ordem do maior preço
+        /// </summary>
+        /// <returns></returns>
+        public List<object> SelectAtBiggestPrices()
+        {
+            List<object> listLivros = null;
+            StringBuilder sbCommand = null;
+            DataBaseHelper dbHelper = null;
+            SqlCommand sqlCommand;
+            SqlDataReader sqlReader = null;
+            int iContador = 0;
+            int iPagina = 1;
+            Livro livro;
+
+            try
+            {
+                sbCommand = new StringBuilder();
+
+                sbCommand.Append(" SELECT * FROM TBL_LIVRO ");
+                sbCommand.Append(" ORDER BY PRECO_LIVRO DESC ");
+
+                //Cria o objeto 
+                dbHelper = DataBaseHelper.Create();
+
+                sqlCommand = new SqlCommand();
+
+                sqlCommand.Connection = dbHelper.ReturnConnection();
+                sqlCommand.CommandText = sbCommand.ToString();
+
+                dbHelper.OpenConnection();
+
+                sqlReader = sqlCommand.ExecuteReader();
+
+                while (sqlReader.Read())
+                {
+                    if (iContador == 12)
+                    {
+                        iContador = 0;
+                        iPagina = iPagina + 1;
+                    }
+
+                    //Cria um novo livro
+                    livro = new Livro();
+
+                    //Atribui os valores nas propriedades
+                    livro.CdLivro = Convert.ToInt32(sqlReader["COD_LIVRO"]);
+                    livro.Isbn = Convert.ToString(sqlReader["ISBN_LIVRO"]);
+                    livro.Titulo = Convert.ToString(sqlReader["TITULO_LIVRO"]);
+                    livro.Autor = Convert.ToString(sqlReader["AUTOR_LIVRO"]);
+                    livro.Editora = Convert.ToString(sqlReader["EDITORA_LIVRO"]);
+                    livro.Genero = Convert.ToString(sqlReader["GENERO_LIVRO"]);
+                    livro.Idioma = Convert.ToString(sqlReader["IDIOMA_LIVRO"]);
+                    livro.Preco = Convert.ToDecimal(sqlReader["PRECO_LIVRO"]);
+                    livro.PrecoConvertido = string.Format("{0:C}", livro.Preco);
+                    livro.QtdPaginas = Convert.ToInt32(sqlReader["QTD_PAGINAS_LIVRO"]);
+                    livro.DataPublicacao = Convert.ToDateTime(sqlReader["DATA_PUBLICACAO_LIVRO"]);
+                    livro.Quantidade = Convert.ToInt32(sqlReader["QUANTIDADE_LIVRO"]);
+                    livro.Descricao = Convert.ToString(sqlReader["DESCRICAO_LIVRO"]);
+                    livro.Status = Convert.ToInt16(sqlReader["STATUS_LIVRO"]);
+                    livro.iPaginacaoLivro = iPagina;
+
+                    //Adiciona o livro na lista
+                    listLivros.Add(livro);
+
+                    iContador++;
+                }
+
+                return listLivros;
+            }
+            catch (Exception err)
+            {
+                throw new Exception(err.Message);
+            }
+            finally
+            {
+                //Fecha a conexao com o banco de dados
+                dbHelper.CloseConnection();
+            }
+        }
+
+        public string GetBiggestPrice() 
+        {
+            StringBuilder sbCommand = null;
+            DataBaseHelper dbHelper = null;
+            SqlCommand sqlCommand = null;
+            SqlDataReader sqlReader = null;
+            string sMaiorPreco = "";
+            decimal dcmMaiorPreco = 0;
+
+            try 
+            {
+                sbCommand = new StringBuilder();
+
+                //Monta o comando
+                sbCommand.Append(" SELECT MAX(PRECO_LIVRO) AS PRECO_LIVRO FROM TBL_LIVRO ");
+
+                //Cria o objeto 
+                dbHelper = DataBaseHelper.Create();
+
+                //Cria o objeto
+                sqlCommand = new SqlCommand();
+
+                //Atribui a conexao e o comando a ser executado
+                sqlCommand.Connection = dbHelper.ReturnConnection();
+                sqlCommand.CommandText = sbCommand.ToString();
+
+                //Abre a conexao
+                dbHelper.OpenConnection();
+
+                //Executa o comando
+                sqlReader = sqlCommand.ExecuteReader();
+
+                //Verifica se houve algum retorno
+                if (sqlReader.HasRows)
+                {
+                    //Realiza a leitura
+                    sqlReader.Read();
+
+                    //Recebe o preco e logo após converte para formato de dinheiro
+                    dcmMaiorPreco = Convert.ToDecimal(sqlReader["PRECO_LIVRO"]);
+                    sMaiorPreco = string.Format("{0:0.00}", dcmMaiorPreco);
+                }
+
+                return sMaiorPreco;
+            }
+            catch (Exception err) 
+            {
+                throw new Exception(err.Message); 
+            }
+            finally
+            {
+                dbHelper.CloseConnection();
+            }
         }
     }
 }

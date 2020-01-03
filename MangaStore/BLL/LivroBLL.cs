@@ -134,7 +134,7 @@ namespace MangaStore.BLL
             }
 
             //Verifica se a propriedade Preco está vazia
-            if (string.IsNullOrEmpty(livro.Preco.ToString().Trim()))
+            if (string.IsNullOrEmpty(livro.PrecoConvertido.Trim()))
             {
                 /*Se estiver vazia retorna uma mensagem alertando que a propriedade esta null.
                 Em outras palavras, significa que o usuário não preencheu o campo Preco
@@ -182,5 +182,31 @@ namespace MangaStore.BLL
             //Se passar por todas as verificações eu retorno vazio, que sinaliza que todos os campos foram preenchidos corretamente.
             return "";
         }
+
+        /// <summary>
+        /// Retorna o preco do livro de maior de valor
+        /// </summary>
+        /// <returns></returns>
+        public string GetBiggestPrice() 
+        {
+            LivroDAO daoLivro = null;
+
+            //Instancia a classe
+            daoLivro = new LivroDAO();
+
+            //Retorna o maior preco
+            return daoLivro.GetBiggestPrice();
+        }
+
+        #region Filters
+        public List<object> FilterBiggestPrices() 
+        {
+            LivroDAO daoLivro = null;
+
+            daoLivro = new LivroDAO();
+
+            return daoLivro.SelectAtBiggestPrices();
+        }
+        #endregion
     }
 }
