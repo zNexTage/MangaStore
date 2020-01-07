@@ -23,6 +23,10 @@
                                 </div>
                                 <div class="col-12">
                                     <asp:TextBox runat="server" ID="txtISBN" CssClass="form-control"></asp:TextBox>
+                                    <div style="text-align: center; margin-top: -5px;display:none;">
+                                        <input type="checkbox" id="chkIsbn" />
+                                        <label for="chkIsbn">ISBN 13</label>
+                                    </div>
                                 </div>
                                 <div class="col-12">
                                     <label class="fontPatrick" style="font-size: 25px;">Titulo: </label>
@@ -65,7 +69,7 @@
                                         <asp:Button runat="server" ID="btnFiltrar" OnClick="btnFiltrar_Click" Text="Filtrar" CssClass="btn btn-info form-control" />
                                     </div>
                                     <div class="col-6">
-                                        <asp:Button runat="server" ID="btnRemoverFiltro" Text="Remover Filtro" CssClass="btn btn-danger form-control" />
+                                        <asp:Button runat="server" ID="btnRemoverFiltro" Text="Remover Filtro" CssClass="btn btn-danger form-control" OnClick="btnRemoverFiltro_Click" />
                                     </div>
                                 </div>
                             </div>
@@ -78,18 +82,17 @@
                                     <div class="col-lg-6 col-sm-12">
                                         <li class="media my-4">
                                             <div class="col-lg-6 col-sm-4" style="padding-left: 0;">
-                                                <img class="mr-3 img-thumbnail" style="width: 170px; height: 253px; object-fit: cover;" src="Comunicacao/RetornaCapaLivro.ashx?CD_LIVRO=<%# DataBinder.Eval(Container.DataItem, "CdLivro")%>" alt="Generic placeholder image">
+                                                <img class="mr-3 img-thumbnail" style="width: 170px; height: 262px; object-fit: cover;" src="Comunicacao/RetornaCapaLivro.ashx?CD_LIVRO=<%# DataBinder.Eval(Container.DataItem, "CdLivro")%>" alt="Generic placeholder image">
                                             </div>
                                             <div class="col-lg-6 col-sm-8 truncateText" style="padding-left: 0">
                                                 <div class="media-body truncateText">
                                                     <h5 class="mt-0 mb-1 truncateText"><%# DataBinder.Eval(Container.DataItem, "Titulo")%></h5>
                                                     <p class="truncateText">Preço: <%# DataBinder.Eval(Container.DataItem, "PrecoConvertido")%></p>
                                                     <hr />
-                                                    <label class="truncateText" style="display:block;font-weight:bold;">Autor: <%# DataBinder.Eval(Container.DataItem, "Autor")%></label>
-                                                    <br />
-                                                    <label class="truncateText" style="display:block;font-weight:bold;">Editora:  <%# DataBinder.Eval(Container.DataItem, "Editora")%></label>
-                                                    <br />
-                                                    <label style="display:block;white-space:normal;font-weight:bold;">Quantidades disponíveis: <%# DataBinder.Eval(Container.DataItem, "Quantidade")%></label>
+                                                    <label class="truncateText" style="display: block; font-weight: bold;">Autor: <%# DataBinder.Eval(Container.DataItem, "Autor")%></label>
+                                                    <label class="truncateText" style="display: block; font-weight: bold;">Editora:  <%# DataBinder.Eval(Container.DataItem, "Editora")%></label>
+                                                    <label style="display: block; white-space: normal; font-weight: bold;">Quantidades disponíveis: <%# DataBinder.Eval(Container.DataItem, "Quantidade")%></label>
+                                                    <label style="display: block; white-space: normal; font-weight: bold;">ISBN: <%# DataBinder.Eval(Container.DataItem, "Isbn")%></label>
                                                 </div>
                                             </div>
                                         </li>
@@ -133,9 +136,29 @@
             <asp:AsyncPostBackTrigger ControlID="btnProximo" EventName="Click" />
         </Triggers>
     </asp:UpdatePanel>
-
     <script type="text/javascript" src="Scripts/jquery-3.0.0.min.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-migrate.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
     <script>
+       /* $(document).ready(function ($) {
+            $('#').attr("placeholder", "12-3456-789-1");
+            $('#').mask("99-9999-999-9");
+
+            $('#chkIsbn').change(function () {
+                if ($('#chkIsbn').is(":checked")) {
+                    $('#').val('');
+                    $('#').attr("placeholder", "123-45-6789-101-1");
+                    $('#').mask("999-99-9999-999-9");
+                }
+                else {
+                    $('#').val('');
+                    $('#').attr("placeholder", "12-3456-789-1");
+                    $('#').mask("99-9999-999-9");
+                }
+            });
+        });*/
+
         function pageLoad() {
             var pgPreco = document.getElementById("<%=rgPreco.ClientID%>"),
                 lblRangePosition = document.getElementById("<%=lblRangePosition.ClientID%>");
@@ -148,5 +171,9 @@
                 lblRangePosition.innerHTML = `R$ ${pgPreco.value}`;
             }, false);
         }
+
+
+
+
     </script>
 </asp:Content>

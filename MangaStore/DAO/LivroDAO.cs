@@ -607,7 +607,7 @@ namespace MangaStore.DAO
             }
 
             //Verifica se é para filtrar pelo preco
-            if (!livro.Preco.Equals("0"))
+            if (livro.Preco != 0)
             {
                 //Verifica se precisa adicionar a clausula AND
                 if (iContClausureAnd > 0)

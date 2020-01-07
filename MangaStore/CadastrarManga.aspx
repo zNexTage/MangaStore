@@ -27,7 +27,7 @@
                         </label>
                     </div>
                     <div class="col-lg-5">
-                        <input type="text" id="txtTitulo" onfocusout="FindBook();" class="form-control" />
+                        <input type="text" id="txtTitulo" onfocusout="FindBook();" class="form-control" required />
                     </div>
                     <hr />
                     <div class="row">
@@ -37,7 +37,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtISBN" class="form-control" />
+                            <input type="text" id="txtISBN" class="form-control" required/>
                         </div>
 
                         <div class="col-lg-1 col-sm-12">
@@ -46,7 +46,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtAutor" class="form-control" />
+                            <input type="text" id="txtAutor" class="form-control" required/>
                         </div>
                     </div>
                     <div class="row">
@@ -56,7 +56,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtEditora" class="form-control" />
+                            <input type="text" id="txtEditora" class="form-control" required/>
                         </div>
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
@@ -64,7 +64,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtGenero" class="form-control" />
+                            <input type="text" id="txtGenero" class="form-control" required/>
                         </div>
                     </div>
                     <div class="row">
@@ -74,7 +74,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtIdioma" class="form-control" />
+                            <input type="text" id="txtIdioma" class="form-control" required/>
                         </div>
                         <div class="col-lg-1 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">
@@ -82,7 +82,7 @@
                             </label>
                         </div>
                         <div class="col-lg-5">
-                            <input type="text" id="txtPreco" class="form-control" />
+                            <input type="text" id="txtPreco" class="form-control" required/>
                         </div>
                     </div>
                     <hr />
@@ -91,16 +91,16 @@
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">N° de páginas: </label>
                         </div>
                         <div class="col-lg-4">
-                            <input type="number" id="txtQtdPagina" class="form-control" />
+                            <input type="number" id="txtQtdPagina" class="form-control" required/>
                         </div>
                         <div class="col-lg-2 col-sm-12">
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">Data Publicação: </label>
                         </div>
                         <div class="col-lg-2">
-                            <asp:DropDownList runat="server" ID="cboMes" CssClass="form-control"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="cboMes" CssClass="form-control" required></asp:DropDownList>
                         </div>
                         <div class="col-lg-2">
-                            <asp:DropDownList runat="server" ID="cboAno" CssClass="form-control"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="cboAno" CssClass="form-control" required></asp:DropDownList>
                         </div>
                     </div>
                     <div class="row">
@@ -108,7 +108,7 @@
                             <label class="fontPatrick" style="display: flex; font-size: 25px;">Quantidade: </label>
                         </div>
                         <div class="col-lg-4">
-                            <input type="number" id="txtQuantidade" class="form-control" />
+                            <input type="number" id="txtQuantidade" class="form-control" required/>
                         </div>
                     </div>
                     <hr />

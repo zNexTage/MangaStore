@@ -15,7 +15,7 @@ namespace MangaStore
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            try 
+            try
             {
                 if (!this.IsPostBack)
                 {
@@ -23,11 +23,11 @@ namespace MangaStore
                     PreencheRepeaterLivros();
                 }
             }
-            catch (Exception err) 
+            catch (Exception err)
             {
                 //Demonstra uma mensagem para o usuario sinalizando que ocorreu um erro
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Error", string.Format("modalMessage('{0}', '{1}')", "Atenção!!", "Ocorreu um erro!! Contate o administrador do sistema"), true);
-                
+
                 //Escreve o erro em arquivo txt
                 Apoio.EscreverExceptionTxt(err.Message);
             }
@@ -36,7 +36,7 @@ namespace MangaStore
         /// <summary>
         /// Realiza o preenchimento do repeater com os livros
         /// </summary>
-        private void PreencheRepeaterLivros() 
+        private void PreencheRepeaterLivros()
         {
             LivroBLL livroBLL = null;
             List<object> listLivros = null;
@@ -59,17 +59,17 @@ namespace MangaStore
             livro.CdLivro = -1;
 
             //Realiza o select para poder preencher a lista
-            listLivros =  livroBLL.MakeSelect(livro);
+            listLivros = livroBLL.MakeSelect(livro);
 
             //Instancia a lisa
             listLivroAux = new List<Livro>();
 
             //Faz um laco para pegar os items da list<object> e adicionar na list<livros>
-            foreach (Livro livroAux in listLivros) 
+            foreach (Livro livroAux in listLivros)
             {
                 listLivroAux.Add(livroAux);
             }
-            
+
             //Recebe a ultima pagina para realiza a paginacao
             iUltimaPagina = listLivroAux[listLivroAux.Count - 1].iPaginacaoLivro;
 
@@ -92,7 +92,7 @@ namespace MangaStore
             lblPrecoMax.Text = string.Format("R$ {0}", sMaiorPreco);
 
             //Verifica a quantidade de livros retornados com a quantidade que sera demonstrada na pagina
-            if (listLivroAux.Count >= FL_QTD_LIMITE_LIVROS) 
+            if (listLivroAux.Count >= FL_QTD_LIMITE_LIVROS)
             {
                 //Cria a paginacao dos livros
                 listLivros = CriarPaginacao(listLivros);
@@ -111,7 +111,7 @@ namespace MangaStore
         /// </summary>
         /// <param name="listLivro"></param>
         /// <returns></returns>
-        public List<object> CriarPaginacao(List<object> listLivro) 
+        public List<object> CriarPaginacao(List<object> listLivro)
         {
             List<object> listLivros;
 
@@ -128,7 +128,7 @@ namespace MangaStore
             foreach (Livro livroAux in listLivro)
             {
                 //Verifica se ja foi adicionado 12 livros na lista
-                if (livroAux.iPaginacaoLivro == 1) 
+                if (livroAux.iPaginacaoLivro == 1)
                 {
                     //Adiciona os livros na lista
                     listLivros.Add(livroAux);
@@ -138,7 +138,7 @@ namespace MangaStore
             //Retorna a lista de livros
             return listLivros;
         }
-                
+
         /// <summary>
         /// Retorna a paginacao para os 12 livros anteriores da lista
         /// </summary>
@@ -173,7 +173,7 @@ namespace MangaStore
                 iPaginaAnterior = iPaginaAtual - 1;
 
                 //Verifica se a pagina anterior é igual a 1
-                if(iPaginaAnterior == 1) 
+                if (iPaginaAnterior == 1)
                 {
                     //Se for o botao Anterior é bloqueado
                     AjustarBotoesPaginacao(false, true);
@@ -183,14 +183,14 @@ namespace MangaStore
                 listLivrosAux = new List<object>();
 
                 //Faz um laço pelos items da lista, para pegar os item pertencentes da pagina que sera usada na paginacao
-                foreach (Livro livro in listLivros) 
+                foreach (Livro livro in listLivros)
                 {
-                    if (livro.iPaginacaoLivro == iPaginaAnterior) 
+                    if (livro.iPaginacaoLivro == iPaginaAnterior)
                     {
                         listLivrosAux.Add(livro);
                     }
                 }
-                
+
                 //Atualiza a sessao que guarda o valor da pagina atual
                 Session[Sessao.PAGINA_ATUAL] = iPaginaAnterior;
 
@@ -245,7 +245,7 @@ namespace MangaStore
                 iUltimaPagina = Convert.ToInt32(Session[Sessao.ULTIMA_PAGINA_PAGINACAO]);
 
                 //Verifica se é a ultima pagina
-                if (iProximaPagina == iUltimaPagina) 
+                if (iProximaPagina == iUltimaPagina)
                 {
                     //Bloqueia o botao Proximo
                     AjustarBotoesPaginacao(true, false);
@@ -262,7 +262,7 @@ namespace MangaStore
                         listLivrosAux.Add(livro);
                     }
                 }
-                
+
                 //Atualiza a sessao que guarda o valor da pagina atual
                 Session[Sessao.PAGINA_ATUAL] = iProximaPagina;
 
@@ -284,7 +284,7 @@ namespace MangaStore
         /// </summary>
         /// <param name="bbtnAterior"></param>
         /// <param name="bBtnProximo"></param>
-        private void AjustarBotoesPaginacao(bool bbtnAterior, bool bBtnProximo) 
+        private void AjustarBotoesPaginacao(bool bbtnAterior, bool bBtnProximo)
         {
             btnAnterior.Enabled = bbtnAterior;
             btnProximo.Enabled = bBtnProximo;
@@ -302,7 +302,7 @@ namespace MangaStore
             string sMensagem = "";
             List<object> listLivros = null;
 
-            try 
+            try
             {
                 //Instancia o objeto
                 livro = new Livro();
@@ -312,7 +312,7 @@ namespace MangaStore
                 livro.Titulo = txtTitulo.Text.Trim();
                 livro.Autor = txtAutor.Text.Trim();
                 livro.Editora = txtEditora.Text.Trim();
-                livro.Genero = txtGenero.Text.Trim();                
+                livro.Genero = txtGenero.Text.Trim();
                 livro.Preco = Convert.ToDecimal(rgPreco.Value.Substring(0, rgPreco.Value.IndexOf('.') > 0 ? rgPreco.Value.IndexOf('.') : rgPreco.Value.Length));
 
                 //Instancia o objeto
@@ -322,7 +322,7 @@ namespace MangaStore
                 sMensagem = livroBLL.ValidateFieldsFilters(livro);
 
                 //Verifica se foi retonado algum mensagem da validação
-                if (!string.IsNullOrEmpty(sMensagem)) 
+                if (!string.IsNullOrEmpty(sMensagem))
                 {
                     //Se tiver retornado é demonstrada para o usuário
                     Apoio.DialogMessage(this, this.GetType(), "Atenção", sMensagem);
@@ -334,9 +334,6 @@ namespace MangaStore
                 //Retorna a lista dos livros filtrados
                 listLivros = livroBLL.FilterAllBooks(ref sMensagem, livro);
 
-                //Salva a lista na sessao
-                Session[Sessao.LISTA_LIVROS] = listLivros;
-
                 //Verifica se foi retornado algum valor
                 if (listLivros == null)
                 {
@@ -344,13 +341,16 @@ namespace MangaStore
                     //Demonstra uma mensagem dizendo que não foi encotrado nenhum livro com os filtros selecionados
                     divModalBody.InnerHtml = sMensagem;
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "", "$(`#modalItemNotFound`).modal(`show`)", true);
-                    
+
                     //Para a execução
                     return;
                 }
 
+                //Salva a lista na sessao
+                Session[Sessao.LISTA_LIVROS] = listLivros;
+
                 //Verifica se a quantidade de itens da lista é inferior a quantidade maxima que pode ser demonstrada
-                if(listLivros.Count <= FL_QTD_LIMITE_LIVROS)
+                if (listLivros.Count <= FL_QTD_LIMITE_LIVROS)
                 {
                     //Bloqueia os botões proximo e anterior
                     AjustarBotoesPaginacao(false, false);
@@ -365,6 +365,39 @@ namespace MangaStore
                 Apoio.DialogMessage(this, this.GetType(), "Atenção!!", "Ocorreu um erro!! Contate o administrador do sistema!!");
                 Apoio.EscreverExceptionTxt(err.Message);
             }
+        }
+
+        /// <summary>
+        /// Remove os filtros dos livros
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void btnRemoverFiltro_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PreencheRepeaterLivros();
+
+                LimparCampos();
+            }
+            catch (Exception err)
+            {
+                Apoio.DialogMessage(this, this.GetType(), "Atenção!!", "Ocorreu um erro!! Contate o administrador do sistema!!");
+                Apoio.EscreverExceptionTxt(err.Message);
+            }
+        }
+
+        /// <summary>
+        /// Limpa todos os campos de textos
+        /// </summary>
+        private void LimparCampos()
+        {
+            txtAutor.Text = string.Empty;
+            txtEditora.Text = string.Empty;
+            txtGenero.Text = string.Empty;
+            txtISBN.Text = string.Empty;
+            txtTitulo.Text = string.Empty;
+            rgPreco.Value = "0";
         }
     }
 }
