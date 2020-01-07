@@ -4,6 +4,7 @@ using MangaStore.Util;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 
 namespace MangaStore
 {
@@ -26,6 +27,9 @@ namespace MangaStore
             {
                 //Demonstra uma mensagem para o usuario sinalizando que ocorreu um erro
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Error", string.Format("modalMessage('{0}', '{1}')", "Atenção!!", "Ocorreu um erro!! Contate o administrador do sistema"), true);
+                
+                //Escreve o erro em arquivo txt
+                Apoio.EscreverExceptionTxt(err.Message);
             }
         }
 
@@ -85,7 +89,7 @@ namespace MangaStore
             rgPreco.Attributes.Add("max", dMaiorPreco.ToString());
 
             //Adiciona o preco do livro mais caro na label
-            lblPrecoMax.Text = string.Format("R$ {0}", dMaiorPreco);
+            lblPrecoMax.Text = string.Format("R$ {0}", sMaiorPreco);
 
             //Verifica a quantidade de livros retornados com a quantidade que sera demonstrada na pagina
             if (listLivroAux.Count >= FL_QTD_LIMITE_LIVROS) 
@@ -102,7 +106,11 @@ namespace MangaStore
             rptLivrosDiponiveis.DataBind();
         }
 
-
+        /// <summary>
+        /// Cria a paginação dos livros
+        /// </summary>
+        /// <param name="listLivro"></param>
+        /// <returns></returns>
         public List<object> CriarPaginacao(List<object> listLivro) 
         {
             List<object> listLivros;
@@ -191,7 +199,7 @@ namespace MangaStore
                 rptLivrosDiponiveis.DataBind();
 
                 //Atualiza o repeater dos livros
-                uptLivros.Update();
+                uptGeral.Update();
             }
             catch (Exception err)
             {
@@ -215,7 +223,7 @@ namespace MangaStore
             try
             {
                 //Verifica se a sessao com a lista de livros esta vazia
-                if (Session[Sessao.LISTA_LIVROS] == null || Session[Sessao.PAGINA_ATUAL] == null)
+                if (Session[Sessao.LISTA_LIVROS] == null || Session[Sessao.PAGINA_ATUAL] == null || Session[Sessao.ULTIMA_PAGINA_PAGINACAO] == null)
                 {
                     //Preenche o repeater novamente e a sessao com a lista
                     PreencheRepeaterLivros();
@@ -254,7 +262,7 @@ namespace MangaStore
                         listLivrosAux.Add(livro);
                     }
                 }
-
+                
                 //Atualiza a sessao que guarda o valor da pagina atual
                 Session[Sessao.PAGINA_ATUAL] = iProximaPagina;
 
@@ -263,7 +271,7 @@ namespace MangaStore
                 rptLivrosDiponiveis.DataBind();
 
                 //Atualiza o repeater com os livros
-                uptLivros.Update();
+                uptGeral.Update();
             }
             catch (Exception err)
             {
@@ -280,6 +288,83 @@ namespace MangaStore
         {
             btnAnterior.Enabled = bbtnAterior;
             btnProximo.Enabled = bBtnProximo;
+        }
+
+        /// <summary>
+        /// Filtra os livros 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void btnFiltrar_Click(object sender, EventArgs e)
+        {
+            Livro livro = null;
+            LivroBLL livroBLL = null;
+            string sMensagem = "";
+            List<object> listLivros = null;
+
+            try 
+            {
+                //Instancia o objeto
+                livro = new Livro();
+
+                //Recebe os valores dos campos de texto
+                livro.Isbn = txtISBN.Text.Trim();
+                livro.Titulo = txtTitulo.Text.Trim();
+                livro.Autor = txtAutor.Text.Trim();
+                livro.Editora = txtEditora.Text.Trim();
+                livro.Genero = txtGenero.Text.Trim();                
+                livro.Preco = Convert.ToDecimal(rgPreco.Value.Substring(0, rgPreco.Value.IndexOf('.') > 0 ? rgPreco.Value.IndexOf('.') : rgPreco.Value.Length));
+
+                //Instancia o objeto
+                livroBLL = new LivroBLL();
+
+                //Valida se o usuario preencheu um dos campos dos filtros
+                sMensagem = livroBLL.ValidateFieldsFilters(livro);
+
+                //Verifica se foi retonado algum mensagem da validação
+                if (!string.IsNullOrEmpty(sMensagem)) 
+                {
+                    //Se tiver retornado é demonstrada para o usuário
+                    Apoio.DialogMessage(this, this.GetType(), "Atenção", sMensagem);
+
+                    //Para a execução
+                    return;
+                }
+
+                //Retorna a lista dos livros filtrados
+                listLivros = livroBLL.FilterAllBooks(ref sMensagem, livro);
+
+                //Salva a lista na sessao
+                Session[Sessao.LISTA_LIVROS] = listLivros;
+
+                //Verifica se foi retornado algum valor
+                if (listLivros == null)
+                {
+                    //Caso a lista esteja vazia significa que nao foi enctrado nenhum livro com o filtro passado pelo usuario
+                    //Demonstra uma mensagem dizendo que não foi encotrado nenhum livro com os filtros selecionados
+                    divModalBody.InnerHtml = sMensagem;
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "", "$(`#modalItemNotFound`).modal(`show`)", true);
+                    
+                    //Para a execução
+                    return;
+                }
+
+                //Verifica se a quantidade de itens da lista é inferior a quantidade maxima que pode ser demonstrada
+                if(listLivros.Count <= FL_QTD_LIMITE_LIVROS)
+                {
+                    //Bloqueia os botões proximo e anterior
+                    AjustarBotoesPaginacao(false, false);
+                }
+
+                //Preenche o repeater com a lista
+                rptLivrosDiponiveis.DataSource = listLivros;
+                rptLivrosDiponiveis.DataBind();
+            }
+            catch (Exception err)
+            {
+                Apoio.DialogMessage(this, this.GetType(), "Atenção!!", "Ocorreu um erro!! Contate o administrador do sistema!!");
+                Apoio.EscreverExceptionTxt(err.Message);
+            }
         }
     }
 }

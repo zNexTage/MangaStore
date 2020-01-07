@@ -33,13 +33,13 @@
         cursor: pointer;
     }
 
-.descriptionTruncate {
+/*.descriptionTruncate {
     white-space: normal;
     word-break: break-all;
     max-height: 192px;
     overflow: hidden;
     text-overflow: ellipsis;
-}
+}*/
 
 @media(max-width: 67.5em){
     .titlePages{

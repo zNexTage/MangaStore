@@ -13,6 +13,10 @@ namespace MangaStore.DAO
 {
     public class DataBaseHelper
     {
+        #region Atributos
+        public static DataBaseHelper dbHelper = DataBaseHelper.Create();
+        #endregion
+
         #region Propriedades
         public SqlConnection MyDbConnection { get; set; }
         #endregion
@@ -26,7 +30,7 @@ namespace MangaStore.DAO
             ConnectionString = ConfigurationManager.AppSettings["DB_MANGA_STORE"];
 
             //Cria um novo objeto SqlConnection
-            this.MyDbConnection = new SqlConnection(ConnectionString);
+            this.MyDbConnection = new SqlConnection(ConnectionString);            
         }
         #endregion
 
@@ -60,7 +64,11 @@ namespace MangaStore.DAO
         /// </summary>
         public void CloseConnection()
         {
-            this.MyDbConnection.Close();
+            //Verifica se a conexao está aberta
+            if (this.MyDbConnection.State == ConnectionState.Open)
+            {
+                this.MyDbConnection.Close();
+            }
         }
 
         /// <summary>

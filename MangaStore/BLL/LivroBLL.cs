@@ -55,7 +55,7 @@ namespace MangaStore.BLL
         /// </summary>
         /// <param name="lCdLivro"></param>
         /// <returns></returns>
-        public byte[] RetornaCapaLivro(long lCdLivro) 
+        public byte[] RetornaCapaLivro(long lCdLivro)
         {
             LivroDAO livroDAO = null;
 
@@ -187,7 +187,7 @@ namespace MangaStore.BLL
         /// Retorna o preco do livro de maior de valor
         /// </summary>
         /// <returns></returns>
-        public string GetBiggestPrice() 
+        public string GetBiggestPrice()
         {
             LivroDAO daoLivro = null;
 
@@ -199,13 +199,50 @@ namespace MangaStore.BLL
         }
 
         #region Filters
-        public List<object> FilterBiggestPrices() 
+
+        /// <summary>
+        /// Valida os campos para poder realizar a filtragem dos livros
+        /// </summary>
+        /// <param name="livro"></param>
+        /// <returns></returns>
+        public string ValidateFieldsFilters(Livro livro)
         {
-            LivroDAO daoLivro = null;
+            //Verifica se todos os campos de filtro estão vazios
+            if (string.IsNullOrEmpty(livro.Isbn.Trim()) && string.IsNullOrEmpty(livro.Titulo.Trim()) && string.IsNullOrEmpty(livro.Autor.Trim()) &&
+                string.IsNullOrEmpty(livro.Editora.Trim()) && string.IsNullOrEmpty(livro.Genero.Trim()) && livro.Preco.Equals("0"))
+            {
+                return "Utilize um dos campos (Isbn, autor, preço...) para poder filtrar os livros";
+            }
 
-            daoLivro = new LivroDAO();
+            //Retorna vazio caso um dos atributos acima esteja com valor
+            return "";
+        }
 
-            return daoLivro.SelectAtBiggestPrices();
+        /// <summary>
+        /// Retorna os livros pela ordem de preco(maior para o menor)
+        /// </summary>
+        /// <returns></returns>
+        public List<Livro> FilterBiggestPrices()
+        {
+            //Instancia o objeto
+            LivroDAO = new LivroDAO();
+
+            //Retorna os livros pela ordem maior preco
+            return LivroDAO.SelectAtBiggestPrices();
+        }
+
+        /// <summary>
+        /// Filtra os livros
+        /// </summary>
+        /// <param name="livro"></param>
+        /// <returns></returns>
+        public List<object> FilterAllBooks(ref string sMensagem, Livro livro)
+        {
+            //Instancia o objeto
+            LivroDAO = new LivroDAO();
+
+            //Retorna os livros filtrados
+            return LivroDAO.FilterAllBooks(ref sMensagem, livro);
         }
         #endregion
     }

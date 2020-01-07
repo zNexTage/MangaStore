@@ -135,6 +135,7 @@ namespace MangaStore.DAO
                 //Realiza um laço para recuperar as informações retornadas do banco
                 while (sqlReader.Read())
                 {
+                    //Realiza a contagem dos items para realiza a paginacao
                     if (iContador == 12)
                     {
                         iContador = 0;
@@ -337,9 +338,9 @@ namespace MangaStore.DAO
         /// Seleciona todos os livros em ordem do maior preço
         /// </summary>
         /// <returns></returns>
-        public List<object> SelectAtBiggestPrices()
+        public List<Livro> SelectAtBiggestPrices()
         {
-            List<object> listLivros = null;
+            List<Livro> listLivros = null;
             StringBuilder sbCommand = null;
             DataBaseHelper dbHelper = null;
             SqlCommand sqlCommand;
@@ -414,7 +415,11 @@ namespace MangaStore.DAO
             }
         }
 
-        public string GetBiggestPrice() 
+        /// <summary>
+        /// Retorna o livro com maior preco
+        /// </summary>
+        /// <returns></returns>
+        public string GetBiggestPrice()
         {
             StringBuilder sbCommand = null;
             DataBaseHelper dbHelper = null;
@@ -423,7 +428,7 @@ namespace MangaStore.DAO
             string sMaiorPreco = "";
             decimal dcmMaiorPreco = 0;
 
-            try 
+            try
             {
                 sbCommand = new StringBuilder();
 
@@ -459,14 +464,234 @@ namespace MangaStore.DAO
 
                 return sMaiorPreco;
             }
-            catch (Exception err) 
+            catch (Exception err)
             {
-                throw new Exception(err.Message); 
+                throw new Exception(err.Message);
             }
             finally
             {
                 dbHelper.CloseConnection();
             }
+        }
+
+        /// <summary>
+        /// Filtra os livros de acordo com as escolhas do usuário
+        /// </summary>
+        /// <param name="sMensagem"></param>
+        /// <param name="livro"></param>
+        /// <returns></returns>
+        public List<object> FilterAllBooks(ref string sMensagem, Livro livro)
+        {
+            SqlCommand sqlCommand;
+            StringBuilder sbCommand;
+            Parameters pIsbn, pTitulo, pAutor, pEditora, pGenero, pPrecoMenor, pPrecoMaior;
+            SqlDataReader sqlReader;
+            int iContador = 0, iPagina = 1;
+            List<object> listLivros = null;
+            StringBuilder sbMensagem = null;
+            int iContClausureAnd = 0;
+            int iMenorPreco, iMaiorPreco;
+
+            //Instancia o objeto
+            sbCommand = new StringBuilder();
+            sbMensagem = new StringBuilder();
+
+            //Instancia o objeto
+            sqlCommand = new SqlCommand();
+
+            //Abre a conexao com o banco de dados
+            DataBaseHelper.dbHelper.OpenConnection();
+
+            //Monta o select do comando
+            sbCommand.Append(" SELECT * FROM TBL_LIVRO WHERE ");
+
+            //Monta uma mensagem para caso não seja encontrado um livro com os filtros do usuario
+            sbMensagem.Append(" <label> Não foi encontrado livro com: </label><br />");
+
+            //Verifica se é para filtrar pela isbn
+            if (!string.IsNullOrEmpty(livro.Isbn.Trim()))
+            {
+                //Verifica se precisa adicionar a clausula AND
+                if (iContClausureAnd > 0)
+                {
+                    sbCommand.Append(" AND ");
+                }
+
+                //Incrementa para que poder adicionar a clausula and nos proximos filtros.
+                iContClausureAnd++;
+
+                sbCommand.Append(" ISBN_LIVRO LIKE @ISBN ");
+                pIsbn = new Parameters("@ISBN", string.Format("%{0}%", livro.Isbn), SqlDbType.VarChar);
+                DataBaseHelper.dbHelper.BuildParameters(ref sqlCommand, pIsbn);
+
+                //Adiciona a isbn na mensagem de livro não encotrado, para caso a isbn digitada não seja encotrada
+                sbMensagem.Append(string.Format(" <label> ISBN: {0} </label><br />  ", livro.Isbn));
+            }
+
+            //Verifica se é para filtrar pelo titulo
+            if (!string.IsNullOrEmpty(livro.Titulo.Trim()))
+            {
+                //Verifica se precisa adicionar a clausula AND
+                if (iContClausureAnd > 0)
+                {
+                    sbCommand.Append(" AND ");
+                }
+
+                //Incrementa para que poder adicionar a clausula and nos proximos filtros.
+                iContClausureAnd++;
+
+                sbCommand.Append(" TITULO_LIVRO LIKE @TITULO ");
+                pTitulo = new Parameters("@TITULO", string.Format("%{0}%", livro.Titulo), SqlDbType.VarChar);
+                DataBaseHelper.dbHelper.BuildParameters(ref sqlCommand, pTitulo);
+
+                //Adiciona o titulo na mensagem de livro não encotrado, para caso o titulo digitado não seja encotrado
+                sbMensagem.Append(string.Format(" <label> Titulo: {0} </label><br />  ", livro.Titulo));
+            }
+
+            //Verifica se é para filtrar pelo autor
+            if (!string.IsNullOrEmpty(livro.Autor.Trim()))
+            {
+                //Verifica se precisa adicionar a clausula AND
+                if (iContClausureAnd > 0)
+                {
+                    sbCommand.Append(" AND ");
+                }
+
+                //Incrementa para que poder adicionar a clausula and nos proximos filtros.
+                iContClausureAnd++;
+
+                sbCommand.Append(" AUTOR_LIVRO LIKE @AUTOR ");
+                pAutor = new Parameters("@AUTOR", string.Format("%{0}%", livro.Autor), SqlDbType.VarChar);
+                DataBaseHelper.dbHelper.BuildParameters(ref sqlCommand, pAutor);
+
+                //Adiciona o autor na mensagem de livro não encotrado, para caso o autor digitado não seja encotrado
+                sbMensagem.Append(string.Format("<label> Autor: {0} </label> <br />", livro.Autor));
+            }
+
+            //Verifica se é para filtrar pela editora
+            if (!string.IsNullOrEmpty(livro.Editora.Trim()))
+            {
+                if (iContClausureAnd > 0)
+                {
+                    sbCommand.Append(" AND ");
+                }
+
+                iContClausureAnd++;
+
+                sbCommand.Append(" EDITORA_LIVRO LIKE @EDITORA ");
+                pEditora = new Parameters("@EDITORA", string.Format("%{0}%", livro.Editora), SqlDbType.VarChar);
+                DataBaseHelper.dbHelper.BuildParameters(ref sqlCommand, pEditora);
+
+                //Adiciona a editora na mensagem de livro não encotrado, para caso a editora digitada não seja encotrada
+                sbMensagem.Append(string.Format("<label> Editora: {0} </label> <br />", livro.Editora));
+            }
+
+            //Verifica se é para filtrar pelo genero
+            if (!string.IsNullOrEmpty(livro.Genero.Trim()))
+            {
+                //Verifica se precisa adicionar a clausula AND
+                if (iContClausureAnd > 0)
+                {
+                    sbCommand.Append(" AND ");
+                }
+
+                //Incrementa para que poder adicionar a clausula and nos proximos filtros.
+                iContClausureAnd++;
+
+                sbCommand.Append(" GENERO_LIVRO LIKE @GENERO ");
+                pGenero = new Parameters("@GENERO", string.Format("%{0}%", livro.Genero), SqlDbType.VarChar);
+                DataBaseHelper.dbHelper.BuildParameters(ref sqlCommand, pGenero);
+
+                //Adiciona o genero na mensagem de livro não encotrado, para caso o genero digitado não seja encotrado
+                sbMensagem.Append(string.Format("<label> Genero: {0} </label> <br />", livro.Genero));
+            }
+
+            //Verifica se é para filtrar pelo preco
+            if (!livro.Preco.Equals("0"))
+            {
+                //Verifica se precisa adicionar a clausula AND
+                if (iContClausureAnd > 0)
+                {
+                    sbCommand.Append(" AND ");
+                }
+
+                //Incrementa para que poder adicionar a clausula and nos proximos filtros.
+                iContClausureAnd++;
+                         
+                //Calcula a diferença e a soma em 10 do valor digitado pelo usuario, para trazer resultados aproximados
+                iMenorPreco = Convert.ToInt32(livro.Preco - 5);
+                iMaiorPreco = Convert.ToInt32(livro.Preco + 5);
+
+                sbCommand.Append(" PRECO_LIVRO >= @MENOR_PRECO AND PRECO_LIVRO <= @MAIOR_PRECO ");
+                pPrecoMenor = new Parameters("@MENOR_PRECO", iMenorPreco, SqlDbType.VarChar);
+                pPrecoMaior = new Parameters("@MAIOR_PRECO", iMaiorPreco, SqlDbType.VarChar);
+                DataBaseHelper.dbHelper.BuildParameters(ref sqlCommand, pPrecoMenor, pPrecoMaior);
+
+                //Adiciona o preço na mensagem de livro não encotrado, para caso o preco digitado não seja encotrado
+                sbMensagem.Append(string.Format("<label> Preço aproximado de: {0} </label> <br />", livro.Preco));
+            }
+
+            //Abre a conexao com o banco de dados
+            sqlCommand.Connection = DataBaseHelper.dbHelper.ReturnConnection();
+
+            //Monta o comando
+            sqlCommand.CommandText = sbCommand.ToString();
+
+            //Executa o reader
+            sqlReader = sqlCommand.ExecuteReader();
+
+            //Verifica se foi retornado valores
+            if (sqlReader.HasRows)
+            {
+                //Instancia a lista
+                listLivros = new List<object>();
+
+                //Realiza um laço para recuperar as informações retornadas do banco
+                while (sqlReader.Read())
+                {
+
+                    if (iContador == 12)
+                    {
+                        iContador = 0;
+                        iPagina = iPagina + 1;
+                    }
+
+                    //Cria um novo livro
+                    livro = new Livro();
+
+                    //Atribui os valores nas propriedades
+                    livro.CdLivro = Convert.ToInt32(sqlReader["COD_LIVRO"]);
+                    livro.Isbn = Convert.ToString(sqlReader["ISBN_LIVRO"]);
+                    livro.Titulo = Convert.ToString(sqlReader["TITULO_LIVRO"]);
+                    livro.Autor = Convert.ToString(sqlReader["AUTOR_LIVRO"]);
+                    livro.Editora = Convert.ToString(sqlReader["EDITORA_LIVRO"]);
+                    livro.Genero = Convert.ToString(sqlReader["GENERO_LIVRO"]);
+                    livro.Idioma = Convert.ToString(sqlReader["IDIOMA_LIVRO"]);
+                    livro.Preco = Convert.ToDecimal(sqlReader["PRECO_LIVRO"]);
+                    livro.PrecoConvertido = string.Format("{0:C}", livro.Preco);
+                    livro.QtdPaginas = Convert.ToInt32(sqlReader["QTD_PAGINAS_LIVRO"]);
+                    livro.DataPublicacao = Convert.ToDateTime(sqlReader["DATA_PUBLICACAO_LIVRO"]);
+                    livro.Quantidade = Convert.ToInt32(sqlReader["QUANTIDADE_LIVRO"]);
+                    livro.Descricao = Convert.ToString(sqlReader["DESCRICAO_LIVRO"]);
+                    livro.Status = Convert.ToInt16(sqlReader["STATUS_LIVRO"]);
+                    livro.iPaginacaoLivro = iPagina;
+
+                    //Adiciona o livro na lista
+                    listLivros.Add(livro);
+
+                    //Incrementa o contador de paginas para a paginação
+                    iContador++;
+                }
+            }
+
+            //Recebe uma possivel mensagem de livro não encotrado
+            sMensagem = sbMensagem.ToString();
+
+            //Fecha a conexa com o banco de dados
+            DataBaseHelper.dbHelper.CloseConnection();
+
+            //Retorna a lista com os livros
+            return listLivros;
         }
     }
 }

@@ -1,0 +1,1 @@
+Falha ao converter valor de parâmetro de String em Decimal.

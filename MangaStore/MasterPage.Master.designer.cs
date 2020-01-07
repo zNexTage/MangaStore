@@ -7,11 +7,13 @@
 // </gerado automaticamente>
 //------------------------------------------------------------------------------
 
-namespace MangaStore {
-    
-    
-    public partial class MasterPage {
-        
+namespace MangaStore
+{
+
+
+    public partial class MasterPage
+    {
+
         /// <summary>
         /// Controle form1.
         /// </summary>
@@ -20,7 +22,7 @@ namespace MangaStore {
         /// Modificar a declaração do campo de movimento do arquivo de designer para o arquivo code-behind.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
-        
+
         /// <summary>
         /// Controle ContentPlaceHolder1.
         /// </summary>
